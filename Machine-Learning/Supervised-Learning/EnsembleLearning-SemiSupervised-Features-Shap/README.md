@@ -1,4 +1,4 @@
-# ML Assignment – Theory, adaBoost, Semi-Supervised Learning & Feature Engineering
+# ML Assignment – Theory, Ensemble Learning, Semi-Supervised Learning & Feature Engineering
 
 ## Overview
 This project contains three main parts that combine **machine learning theory**, **supervised learning with ensembles**, **semi-supervised learning**, and a complete workflow of **feature generation/selection + explainability**.
