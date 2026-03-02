@@ -1,6 +1,5 @@
 # ML 
-## Project 1: 
-## Naive Bayes Classification & FeatureEngineering & Regression
+## Project 1: Naive Bayes Classification & FeatureEngineering & Regression
 
 ## Overview
 
