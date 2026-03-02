@@ -1,5 +1,5 @@
 # Ex2 – Unsupervised Learning  
-## Customer Segmentation using K-Means & PCA
+## Customer Segmentation using K-Means, Silhouette & PCA
 
 ### Overview
 
