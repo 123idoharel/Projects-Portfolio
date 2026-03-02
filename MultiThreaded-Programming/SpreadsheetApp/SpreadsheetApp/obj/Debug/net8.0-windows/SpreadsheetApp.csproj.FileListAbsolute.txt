@@ -1,0 +1,16 @@
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\bin\Debug\net8.0-windows\SpreadsheetApp.exe
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\bin\Debug\net8.0-windows\SpreadsheetApp.deps.json
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\bin\Debug\net8.0-windows\SpreadsheetApp.runtimeconfig.json
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\bin\Debug\net8.0-windows\SpreadsheetApp.dll
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\bin\Debug\net8.0-windows\SpreadsheetApp.pdb
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.Form1.resources
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.csproj.GenerateResource.cache
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.AssemblyInfoInputs.cache
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.AssemblyInfo.cs
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.csproj.CoreCompileInputs.cache
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.dll
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\refint\SpreadsheetApp.dll
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.pdb
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\SpreadsheetApp.genruntimeconfig.cache
+C:\Users\idoha\source\repos\SpreadsheetApp\SpreadsheetApp\obj\Debug\net8.0-windows\ref\SpreadsheetApp.dll

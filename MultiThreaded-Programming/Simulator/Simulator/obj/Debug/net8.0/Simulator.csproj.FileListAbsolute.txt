@@ -1,0 +1,14 @@
+C:\Users\idoha\source\repos\Simulator\Simulator\bin\Debug\net8.0\Simulator.exe
+C:\Users\idoha\source\repos\Simulator\Simulator\bin\Debug\net8.0\Simulator.deps.json
+C:\Users\idoha\source\repos\Simulator\Simulator\bin\Debug\net8.0\Simulator.runtimeconfig.json
+C:\Users\idoha\source\repos\Simulator\Simulator\bin\Debug\net8.0\Simulator.dll
+C:\Users\idoha\source\repos\Simulator\Simulator\bin\Debug\net8.0\Simulator.pdb
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\Simulator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\Simulator.AssemblyInfoInputs.cache
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\Simulator.AssemblyInfo.cs
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\Simulator.csproj.CoreCompileInputs.cache
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\Simulator.dll
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\refint\Simulator.dll
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\Simulator.pdb
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\Simulator.genruntimeconfig.cache
+C:\Users\idoha\source\repos\Simulator\Simulator\obj\Debug\net8.0\ref\Simulator.dll
