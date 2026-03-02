@@ -1,0 +1,32 @@
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.Form1.resources
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.csproj.GenerateResource.cache
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.AssemblyInfoInputs.cache
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.AssemblyInfo.cs
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.csproj.CoreCompileInputs.cache
+C:\Users\idoha\source\repos\Safari\Safari\bin\Debug\net8.0-windows\Safari.exe
+C:\Users\idoha\source\repos\Safari\Safari\bin\Debug\net8.0-windows\Safari.deps.json
+C:\Users\idoha\source\repos\Safari\Safari\bin\Debug\net8.0-windows\Safari.runtimeconfig.json
+C:\Users\idoha\source\repos\Safari\Safari\bin\Debug\net8.0-windows\Safari.dll
+C:\Users\idoha\source\repos\Safari\Safari\bin\Debug\net8.0-windows\Safari.pdb
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.dll
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\refint\Safari.dll
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.pdb
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\Safari.genruntimeconfig.cache
+C:\Users\idoha\source\repos\Safari\Safari\obj\Debug\net8.0-windows\ref\Safari.dll
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\bin\Debug\net8.0-windows\Safari.exe
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\bin\Debug\net8.0-windows\Safari.deps.json
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\bin\Debug\net8.0-windows\Safari.runtimeconfig.json
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\bin\Debug\net8.0-windows\Safari.dll
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\bin\Debug\net8.0-windows\Safari.pdb
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.Form1.resources
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.csproj.GenerateResource.cache
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.AssemblyInfoInputs.cache
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.AssemblyInfo.cs
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.csproj.CoreCompileInputs.cache
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.dll
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\refint\Safari.dll
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.pdb
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\Safari.genruntimeconfig.cache
+C:\Users\idoha\OneDrive\שולחן העבודה\עבודות סמסטר ב\מערכות הפעלה\עבודה 3\Safari\Safari\obj\Debug\net8.0-windows\ref\Safari.dll
