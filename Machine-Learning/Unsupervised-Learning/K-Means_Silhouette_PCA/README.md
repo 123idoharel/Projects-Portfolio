@@ -1,4 +1,4 @@
-# Ex2 – Unsupervised Learning  
+# ML Project 1 – Unsupervised Learning  
 ## Customer Segmentation using K-Means, Silhouette & PCA
 
 ### Overview
