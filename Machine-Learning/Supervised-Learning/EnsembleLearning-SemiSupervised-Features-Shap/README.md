@@ -1,4 +1,4 @@
-# ML Project 2 – Theory, Ensemble Learning, Semi-Supervised Learning & Feature Engineering
+# ML Project 3 – Theory, Ensemble Learning, Semi-Supervised Learning & Feature Engineering
 
 ## Overview
 This project contains three main parts that combine **machine learning theory**, **supervised learning with ensembles**, **semi-supervised learning**, and a complete workflow of **feature generation/selection + explainability**.
