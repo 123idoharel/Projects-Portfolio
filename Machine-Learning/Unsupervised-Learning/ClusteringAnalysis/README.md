@@ -1,56 +1,78 @@
-# Unsupervised Learning – Clustering Analysis
+# Unsupervised Learning : K-Means, silhouette & PCA
 
-## Overview
-This project explores unsupervised learning techniques for discovering hidden structure in unlabeled data.  
-The work focuses on clustering methods, dimensionality analysis, and evaluation of cluster quality.
+### Overview
 
-The project was implemented as part of a Machine Learning course and demonstrates practical application of unsupervised learning workflows.
+This project focuses on the practical implementation of **unsupervised learning techniques** for customer segmentation.
 
----
+The objective of the assignment was to apply clustering and dimensionality reduction methods in order to discover hidden structures in customer behavioral data and extract meaningful patterns without labeled targets.
 
-## Objectives
-- Explore the structure of unlabeled datasets
-- Apply clustering algorithms
-- Analyze cluster quality and interpretability
-- Perform data preprocessing and feature analysis
+The project demonstrates the full unsupervised learning workflow:  
+data preprocessing, clustering, dimensionality reduction, evaluation, and interpretation.
 
 ---
 
-## Methods and Techniques
+## Project Objectives
 
-### Data Preprocessing
-- Handling missing values (if applicable)
-- Feature scaling / normalization
-- Exploratory Data Analysis (EDA)
+- Load and preprocess real-world tabular data
+- Perform exploratory data analysis (EDA)
+- Apply K-Means clustering
+- Evaluate cluster quality using quantitative metrics
+- Perform dimensionality reduction using PCA
+- Analyze the impact of dimensionality reduction on clustering performance
+- Derive business-oriented insights from clustering results
 
-### Clustering Algorithms
-- K-Means clustering
-- Selection of optimal number of clusters using:
-  - Elbow Method
+---
+
+
+### Data Preparation
+- Handling missing values (median imputation)
+- Feature scaling using MinMaxScaler
+- Categorical feature encoding (One-Hot Encoding)
+- Removal of non-informative columns
+
+### Clustering
+- K-Means applied on selected features
+- K-Means applied on the full feature space
+- Optimal number of clusters determined using:
+  - Elbow Method (inertia)
   - Silhouette Score
 
-### Analysis
-- Visualization of clusters
-- Interpretation of cluster characteristics
-- Comparison between different clustering configurations
+### Dimensionality Reduction
+- Principal Component Analysis (PCA) with 2 components
+- Variance explained analysis
+- Visualization in reduced feature space
+
+### PCA + KMeans
+- Clustering on reduced-dimensional data
+- Comparison of clustering quality before and after PCA
+- Evaluation based on silhouette scores and visual separation
 
 ---
 
-## Technologies
+## Technologies Used
+
 - Python  
-- NumPy  
 - Pandas  
-- Matplotlib / Seaborn  
+- NumPy  
+- Matplotlib  
 - Scikit-learn  
-- Jupyter Notebook  
+  - KMeans  
+  - MinMaxScaler  
+  - PCA  
+  - silhouette_score  
 
 ---
 
-## Results
-The analysis demonstrates how unsupervised learning can reveal meaningful patterns and group similar observations without labeled data.
+## Skills Demonstrated
+
+- End-to-end unsupervised learning pipeline
+- Data preprocessing and feature engineering
+- Cluster validation and model evaluation
+- Dimensionality reduction techniques
+- Analytical reasoning and interpretation of model results
+- Business insight extraction from unlabeled data
 
 ---
 
-## How to Run
 
 1. Install dependencies:
