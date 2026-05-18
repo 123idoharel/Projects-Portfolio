@@ -1,0 +1,23 @@
+# ── Dependencies (rebuilt inside the container) ──────────────────────────────
+frontend/node_modules/
+__pycache__/
+core/__pycache__/
+core/adapters/__pycache__/
+
+# ── Cached offline data (regenerated on first request) ───────────────────────
+data/
+
+# ── Git / IDE ────────────────────────────────────────────────────────────────
+.git/
+.gitignore
+.vscode/
+.idea/
+*.pyc
+
+# ── Build artifacts (we rebuild inside Docker) ───────────────────────────────
+frontend/dist/
+
+# ── Docs (not needed at runtime) ─────────────────────────────────────────────
+README.md
+ALGORITHM.md
+REAL_HARDWARE_INTEGRATION.md

@@ -1,0 +1,15 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Railway deployment configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# Railway detects the Dockerfile automatically.
+# This file just sets the health check and restart policy.
+
+[deploy]
+# Health check: Railway pings this path to verify the server is alive.
+# /api/server_token is a lightweight endpoint that returns immediately.
+healthcheckPath = "/api/server_token"
+healthcheckTimeout = 30
+
+# Restart on crash (OOM, unhandled exception, etc.)
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

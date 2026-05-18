@@ -1,0 +1,3079 @@
+{
+  "meta": {
+    "name": "Azrieli Complex - Dual Lanes",
+    "unit": "meters",
+    "default_entrance": "ENT_LANE_A"
+  },
+  "entrances": [
+    "ENT_LANE_A",
+    "ENT_LANE_B"
+  ],
+  "driving": {
+    "nodes": [
+      {
+        "id": "ENT_LANE_A",
+        "floor": 0,
+        "x": -15,
+        "y": 90,
+        "type": "entrance"
+      },
+      {
+        "id": "ENT_LANE_B",
+        "floor": 0,
+        "x": -15,
+        "y": 60,
+        "type": "entrance"
+      },
+      {
+        "id": "F0_MERGE",
+        "floor": 0,
+        "x": 30,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_A1",
+        "floor": 0,
+        "x": 50,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_A2",
+        "floor": 0,
+        "x": 100,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_A3",
+        "floor": 0,
+        "x": 150,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_A4",
+        "floor": 0,
+        "x": 200,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_A5",
+        "floor": 0,
+        "x": 250,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_A6",
+        "floor": 0,
+        "x": 300,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_B1",
+        "floor": 0,
+        "x": 50,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_B2",
+        "floor": 0,
+        "x": 100,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_B3",
+        "floor": 0,
+        "x": 150,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_B4",
+        "floor": 0,
+        "x": 200,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_B5",
+        "floor": 0,
+        "x": 250,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_B6",
+        "floor": 0,
+        "x": 300,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_C1",
+        "floor": 0,
+        "x": 50,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_C2",
+        "floor": 0,
+        "x": 100,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_C3",
+        "floor": 0,
+        "x": 150,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_C4",
+        "floor": 0,
+        "x": 200,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_C5",
+        "floor": 0,
+        "x": 250,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F0_C6",
+        "floor": 0,
+        "x": 300,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "RAMP_F0",
+        "floor": 0,
+        "x": 175,
+        "y": 50,
+        "type": "ramp"
+      },
+      {
+        "id": "RAMP_F1",
+        "floor": 1,
+        "x": 175,
+        "y": 50,
+        "type": "ramp"
+      },
+      {
+        "id": "F1_A1",
+        "floor": 1,
+        "x": 50,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_A2",
+        "floor": 1,
+        "x": 100,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_A3",
+        "floor": 1,
+        "x": 150,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_A4",
+        "floor": 1,
+        "x": 200,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_A5",
+        "floor": 1,
+        "x": 250,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_A6",
+        "floor": 1,
+        "x": 300,
+        "y": 75,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_B1",
+        "floor": 1,
+        "x": 50,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_B2",
+        "floor": 1,
+        "x": 100,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_B3",
+        "floor": 1,
+        "x": 150,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_B4",
+        "floor": 1,
+        "x": 200,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_B5",
+        "floor": 1,
+        "x": 250,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_B6",
+        "floor": 1,
+        "x": 300,
+        "y": 125,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_C1",
+        "floor": 1,
+        "x": 50,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_C2",
+        "floor": 1,
+        "x": 100,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_C3",
+        "floor": 1,
+        "x": 150,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_C4",
+        "floor": 1,
+        "x": 200,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_C5",
+        "floor": 1,
+        "x": 250,
+        "y": 25,
+        "type": "intersection"
+      },
+      {
+        "id": "F1_C6",
+        "floor": 1,
+        "x": 300,
+        "y": 25,
+        "type": "intersection"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ENT_LANE_A",
+        "to": "F0_MERGE",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "ENT_LANE_B",
+        "to": "F0_MERGE",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_MERGE",
+        "to": "F0_A1",
+        "length_m": 20,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_A1",
+        "to": "F0_A2",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_A2",
+        "to": "F0_A3",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_A3",
+        "to": "F0_A4",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_A4",
+        "to": "F0_A5",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_A5",
+        "to": "F0_A6",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_B1",
+        "to": "F0_B2",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_B2",
+        "to": "F0_B3",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_B3",
+        "to": "F0_B4",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_B4",
+        "to": "F0_B5",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_B5",
+        "to": "F0_B6",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_C1",
+        "to": "F0_C2",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_C2",
+        "to": "F0_C3",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_C3",
+        "to": "F0_C4",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_C4",
+        "to": "F0_C5",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_C5",
+        "to": "F0_C6",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F0_A1",
+        "to": "F0_B1",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A2",
+        "to": "F0_B2",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A3",
+        "to": "F0_B3",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A4",
+        "to": "F0_B4",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A5",
+        "to": "F0_B5",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A6",
+        "to": "F0_B6",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A1",
+        "to": "F0_C1",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A2",
+        "to": "F0_C2",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A3",
+        "to": "F0_C3",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A4",
+        "to": "F0_C4",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A5",
+        "to": "F0_C5",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_A6",
+        "to": "F0_C6",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_C3",
+        "to": "RAMP_F0",
+        "length_m": 35,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F0_C4",
+        "to": "RAMP_F0",
+        "length_m": 35,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "RAMP_F0",
+        "to": "RAMP_F1",
+        "length_m": 40,
+        "type": "ramp",
+        "bidir": true
+      },
+      {
+        "from": "F1_A1",
+        "to": "F1_A2",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_A2",
+        "to": "F1_A3",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_A3",
+        "to": "F1_A4",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_A4",
+        "to": "F1_A5",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_A5",
+        "to": "F1_A6",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_B1",
+        "to": "F1_B2",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_B2",
+        "to": "F1_B3",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_B3",
+        "to": "F1_B4",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_B4",
+        "to": "F1_B5",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_B5",
+        "to": "F1_B6",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_C1",
+        "to": "F1_C2",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_C2",
+        "to": "F1_C3",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_C3",
+        "to": "F1_C4",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_C4",
+        "to": "F1_C5",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_C5",
+        "to": "F1_C6",
+        "length_m": 50,
+        "type": "main",
+        "bidir": true
+      },
+      {
+        "from": "F1_A1",
+        "to": "F1_B1",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A2",
+        "to": "F1_B2",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A3",
+        "to": "F1_B3",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A4",
+        "to": "F1_B4",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A5",
+        "to": "F1_B5",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A6",
+        "to": "F1_B6",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A1",
+        "to": "F1_C1",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A2",
+        "to": "F1_C2",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A3",
+        "to": "F1_C3",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A4",
+        "to": "F1_C4",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A5",
+        "to": "F1_C5",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "F1_A6",
+        "to": "F1_C6",
+        "length_m": 50,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "RAMP_F1",
+        "to": "F1_C3",
+        "length_m": 35,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "RAMP_F1",
+        "to": "F1_C4",
+        "length_m": 35,
+        "type": "aisle",
+        "bidir": true
+      },
+      {
+        "from": "RAMP_F1",
+        "to": "F1_A3",
+        "length_m": 35,
+        "type": "aisle",
+        "bidir": true
+      }
+    ]
+  },
+  "targets": [
+    {
+      "id": "ELEV_OFFICE_A_F0",
+      "type": "elevator",
+      "target_group": "office_a",
+      "subtype": "office_a",
+      "label": "מעלית משרדים A",
+      "floor": 0,
+      "x": 75,
+      "y": 100
+    },
+    {
+      "id": "ELEV_OFFICE_B_F0",
+      "type": "elevator",
+      "target_group": "office_b",
+      "subtype": "office_b",
+      "label": "מעלית משרדים B",
+      "floor": 0,
+      "x": 225,
+      "y": 100
+    },
+    {
+      "id": "ELEV_MALL_F0",
+      "type": "elevator",
+      "target_group": "mall_elevator",
+      "subtype": "mall_elevator",
+      "label": "מעלית לקניון",
+      "floor": 0,
+      "x": 150,
+      "y": 50
+    },
+    {
+      "id": "ESC_MALL_F0",
+      "type": "escalator",
+      "target_group": "mall_escalator",
+      "subtype": "mall_escalator",
+      "label": "מדרגות נעות לקניון",
+      "floor": 0,
+      "x": 200,
+      "y": 30
+    },
+    {
+      "id": "ELEV_OFFICE_A_F1",
+      "type": "elevator",
+      "target_group": "office_a",
+      "subtype": "office_a",
+      "label": "מעלית משרדים A",
+      "floor": 1,
+      "x": 75,
+      "y": 100
+    },
+    {
+      "id": "ELEV_OFFICE_B_F1",
+      "type": "elevator",
+      "target_group": "office_b",
+      "subtype": "office_b",
+      "label": "מעלית משרדים B",
+      "floor": 1,
+      "x": 225,
+      "y": 100
+    },
+    {
+      "id": "ELEV_MALL_F1",
+      "type": "elevator",
+      "target_group": "mall_elevator",
+      "subtype": "mall_elevator",
+      "label": "מעלית לקניון",
+      "floor": 1,
+      "x": 150,
+      "y": 50
+    },
+    {
+      "id": "ESC_MALL_F1",
+      "type": "escalator",
+      "target_group": "mall_escalator",
+      "subtype": "mall_escalator",
+      "label": "מדרגות נעות לקניון",
+      "floor": 1,
+      "x": 200,
+      "y": 30
+    }
+  ],
+  "spots": [
+    {
+      "id": "F0-A01",
+      "floor": 0,
+      "x": 60,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A1"
+        },
+        {
+          "node": "F0_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A02",
+      "floor": 0,
+      "x": 75,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A1"
+        },
+        {
+          "node": "F0_A2"
+        }
+      ],
+      "spot_type": "disabled"
+    },
+    {
+      "id": "F0-A03",
+      "floor": 0,
+      "x": 90,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A04",
+      "floor": 0,
+      "x": 110,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A2"
+        },
+        {
+          "node": "F0_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A05",
+      "floor": 0,
+      "x": 125,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A2"
+        },
+        {
+          "node": "F0_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A06",
+      "floor": 0,
+      "x": 140,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A07",
+      "floor": 0,
+      "x": 160,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A3"
+        },
+        {
+          "node": "F0_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A08",
+      "floor": 0,
+      "x": 175,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A3"
+        },
+        {
+          "node": "F0_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A09",
+      "floor": 0,
+      "x": 190,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A10",
+      "floor": 0,
+      "x": 210,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A4"
+        },
+        {
+          "node": "F0_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A11",
+      "floor": 0,
+      "x": 225,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A4"
+        },
+        {
+          "node": "F0_A5"
+        }
+      ],
+      "spot_type": "disabled"
+    },
+    {
+      "id": "F0-A12",
+      "floor": 0,
+      "x": 240,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A13",
+      "floor": 0,
+      "x": 260,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A5"
+        },
+        {
+          "node": "F0_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A14",
+      "floor": 0,
+      "x": 275,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A5"
+        },
+        {
+          "node": "F0_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-A15",
+      "floor": 0,
+      "x": 290,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B01",
+      "floor": 0,
+      "x": 60,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A1"
+        },
+        {
+          "node": "F0_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B02",
+      "floor": 0,
+      "x": 75,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A1"
+        },
+        {
+          "node": "F0_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B03",
+      "floor": 0,
+      "x": 90,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B04",
+      "floor": 0,
+      "x": 110,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A2"
+        },
+        {
+          "node": "F0_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B05",
+      "floor": 0,
+      "x": 125,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A2"
+        },
+        {
+          "node": "F0_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B06",
+      "floor": 0,
+      "x": 140,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A3"
+        }
+      ],
+      "spot_type": "disabled"
+    },
+    {
+      "id": "F0-B07",
+      "floor": 0,
+      "x": 160,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A3"
+        },
+        {
+          "node": "F0_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B08",
+      "floor": 0,
+      "x": 175,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A3"
+        },
+        {
+          "node": "F0_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B09",
+      "floor": 0,
+      "x": 190,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B10",
+      "floor": 0,
+      "x": 210,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A4"
+        },
+        {
+          "node": "F0_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B11",
+      "floor": 0,
+      "x": 225,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A4"
+        },
+        {
+          "node": "F0_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B12",
+      "floor": 0,
+      "x": 240,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B13",
+      "floor": 0,
+      "x": 260,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A5"
+        },
+        {
+          "node": "F0_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B14",
+      "floor": 0,
+      "x": 275,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A5"
+        },
+        {
+          "node": "F0_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-B15",
+      "floor": 0,
+      "x": 290,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F0_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C01",
+      "floor": 0,
+      "x": 60,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B1"
+        },
+        {
+          "node": "F0_B2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C02",
+      "floor": 0,
+      "x": 75,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B1"
+        },
+        {
+          "node": "F0_B2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C03",
+      "floor": 0,
+      "x": 90,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C04",
+      "floor": 0,
+      "x": 110,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B2"
+        },
+        {
+          "node": "F0_B3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C05",
+      "floor": 0,
+      "x": 125,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B2"
+        },
+        {
+          "node": "F0_B3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C06",
+      "floor": 0,
+      "x": 140,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C07",
+      "floor": 0,
+      "x": 160,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B3"
+        },
+        {
+          "node": "F0_B4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C08",
+      "floor": 0,
+      "x": 175,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B3"
+        },
+        {
+          "node": "F0_B4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C09",
+      "floor": 0,
+      "x": 190,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C10",
+      "floor": 0,
+      "x": 210,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B4"
+        },
+        {
+          "node": "F0_B5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C11",
+      "floor": 0,
+      "x": 225,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B4"
+        },
+        {
+          "node": "F0_B5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C12",
+      "floor": 0,
+      "x": 240,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C13",
+      "floor": 0,
+      "x": 260,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B5"
+        },
+        {
+          "node": "F0_B6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C14",
+      "floor": 0,
+      "x": 275,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B5"
+        },
+        {
+          "node": "F0_B6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-C15",
+      "floor": 0,
+      "x": 290,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F0_B6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D01",
+      "floor": 0,
+      "x": 60,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C1"
+        },
+        {
+          "node": "F0_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D02",
+      "floor": 0,
+      "x": 75,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C1"
+        },
+        {
+          "node": "F0_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D03",
+      "floor": 0,
+      "x": 90,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D04",
+      "floor": 0,
+      "x": 110,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C2"
+        },
+        {
+          "node": "F0_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D05",
+      "floor": 0,
+      "x": 125,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C2"
+        },
+        {
+          "node": "F0_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D06",
+      "floor": 0,
+      "x": 140,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D07",
+      "floor": 0,
+      "x": 160,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C3"
+        },
+        {
+          "node": "F0_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D08",
+      "floor": 0,
+      "x": 175,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C3"
+        },
+        {
+          "node": "F0_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D09",
+      "floor": 0,
+      "x": 190,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C4"
+        }
+      ],
+      "spot_type": "disabled"
+    },
+    {
+      "id": "F0-D10",
+      "floor": 0,
+      "x": 210,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C4"
+        },
+        {
+          "node": "F0_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D11",
+      "floor": 0,
+      "x": 225,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C4"
+        },
+        {
+          "node": "F0_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D12",
+      "floor": 0,
+      "x": 240,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D13",
+      "floor": 0,
+      "x": 260,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C5"
+        },
+        {
+          "node": "F0_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D14",
+      "floor": 0,
+      "x": 275,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C5"
+        },
+        {
+          "node": "F0_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-D15",
+      "floor": 0,
+      "x": 290,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E01",
+      "floor": 0,
+      "x": 60,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C1"
+        },
+        {
+          "node": "F0_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E02",
+      "floor": 0,
+      "x": 75,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C1"
+        },
+        {
+          "node": "F0_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E03",
+      "floor": 0,
+      "x": 90,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E04",
+      "floor": 0,
+      "x": 110,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C2"
+        },
+        {
+          "node": "F0_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E05",
+      "floor": 0,
+      "x": 125,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C2"
+        },
+        {
+          "node": "F0_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E06",
+      "floor": 0,
+      "x": 140,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E07",
+      "floor": 0,
+      "x": 160,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C3"
+        },
+        {
+          "node": "F0_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E08",
+      "floor": 0,
+      "x": 175,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C3"
+        },
+        {
+          "node": "F0_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E09",
+      "floor": 0,
+      "x": 190,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E10",
+      "floor": 0,
+      "x": 210,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C4"
+        },
+        {
+          "node": "F0_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E11",
+      "floor": 0,
+      "x": 225,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C4"
+        },
+        {
+          "node": "F0_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E12",
+      "floor": 0,
+      "x": 240,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E13",
+      "floor": 0,
+      "x": 260,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C5"
+        },
+        {
+          "node": "F0_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E14",
+      "floor": 0,
+      "x": 275,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C5"
+        },
+        {
+          "node": "F0_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F0-E15",
+      "floor": 0,
+      "x": 290,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F0_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A01",
+      "floor": 1,
+      "x": 60,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A1"
+        },
+        {
+          "node": "F1_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A02",
+      "floor": 1,
+      "x": 75,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A1"
+        },
+        {
+          "node": "F1_A2"
+        }
+      ],
+      "spot_type": "disabled"
+    },
+    {
+      "id": "F1-A03",
+      "floor": 1,
+      "x": 90,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A04",
+      "floor": 1,
+      "x": 110,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A2"
+        },
+        {
+          "node": "F1_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A05",
+      "floor": 1,
+      "x": 125,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A2"
+        },
+        {
+          "node": "F1_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A06",
+      "floor": 1,
+      "x": 140,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A07",
+      "floor": 1,
+      "x": 160,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A3"
+        },
+        {
+          "node": "F1_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A08",
+      "floor": 1,
+      "x": 175,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A3"
+        },
+        {
+          "node": "F1_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A09",
+      "floor": 1,
+      "x": 190,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A10",
+      "floor": 1,
+      "x": 210,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A4"
+        },
+        {
+          "node": "F1_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A11",
+      "floor": 1,
+      "x": 225,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A4"
+        },
+        {
+          "node": "F1_A5"
+        }
+      ],
+      "spot_type": "disabled"
+    },
+    {
+      "id": "F1-A12",
+      "floor": 1,
+      "x": 240,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A13",
+      "floor": 1,
+      "x": 260,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A5"
+        },
+        {
+          "node": "F1_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A14",
+      "floor": 1,
+      "x": 275,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A5"
+        },
+        {
+          "node": "F1_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-A15",
+      "floor": 1,
+      "x": 290,
+      "y": 85,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B01",
+      "floor": 1,
+      "x": 60,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A1"
+        },
+        {
+          "node": "F1_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B02",
+      "floor": 1,
+      "x": 75,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A1"
+        },
+        {
+          "node": "F1_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B03",
+      "floor": 1,
+      "x": 90,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B04",
+      "floor": 1,
+      "x": 110,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A2"
+        },
+        {
+          "node": "F1_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B05",
+      "floor": 1,
+      "x": 125,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A2"
+        },
+        {
+          "node": "F1_A3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B06",
+      "floor": 1,
+      "x": 140,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A3"
+        }
+      ],
+      "spot_type": "disabled"
+    },
+    {
+      "id": "F1-B07",
+      "floor": 1,
+      "x": 160,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A3"
+        },
+        {
+          "node": "F1_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B08",
+      "floor": 1,
+      "x": 175,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A3"
+        },
+        {
+          "node": "F1_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B09",
+      "floor": 1,
+      "x": 190,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B10",
+      "floor": 1,
+      "x": 210,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A4"
+        },
+        {
+          "node": "F1_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B11",
+      "floor": 1,
+      "x": 225,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A4"
+        },
+        {
+          "node": "F1_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B12",
+      "floor": 1,
+      "x": 240,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B13",
+      "floor": 1,
+      "x": 260,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A5"
+        },
+        {
+          "node": "F1_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B14",
+      "floor": 1,
+      "x": 275,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A5"
+        },
+        {
+          "node": "F1_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-B15",
+      "floor": 1,
+      "x": 290,
+      "y": 65,
+      "road_y": 75,
+      "access": [
+        {
+          "node": "F1_A6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C01",
+      "floor": 1,
+      "x": 60,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B1"
+        },
+        {
+          "node": "F1_B2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C02",
+      "floor": 1,
+      "x": 75,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B1"
+        },
+        {
+          "node": "F1_B2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C03",
+      "floor": 1,
+      "x": 90,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C04",
+      "floor": 1,
+      "x": 110,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B2"
+        },
+        {
+          "node": "F1_B3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C05",
+      "floor": 1,
+      "x": 125,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B2"
+        },
+        {
+          "node": "F1_B3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C06",
+      "floor": 1,
+      "x": 140,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C07",
+      "floor": 1,
+      "x": 160,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B3"
+        },
+        {
+          "node": "F1_B4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C08",
+      "floor": 1,
+      "x": 175,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B3"
+        },
+        {
+          "node": "F1_B4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C09",
+      "floor": 1,
+      "x": 190,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C10",
+      "floor": 1,
+      "x": 210,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B4"
+        },
+        {
+          "node": "F1_B5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C11",
+      "floor": 1,
+      "x": 225,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B4"
+        },
+        {
+          "node": "F1_B5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C12",
+      "floor": 1,
+      "x": 240,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C13",
+      "floor": 1,
+      "x": 260,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B5"
+        },
+        {
+          "node": "F1_B6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C14",
+      "floor": 1,
+      "x": 275,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B5"
+        },
+        {
+          "node": "F1_B6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-C15",
+      "floor": 1,
+      "x": 290,
+      "y": 115,
+      "road_y": 125,
+      "access": [
+        {
+          "node": "F1_B6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D01",
+      "floor": 1,
+      "x": 60,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C1"
+        },
+        {
+          "node": "F1_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D02",
+      "floor": 1,
+      "x": 75,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C1"
+        },
+        {
+          "node": "F1_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D03",
+      "floor": 1,
+      "x": 90,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D04",
+      "floor": 1,
+      "x": 110,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C2"
+        },
+        {
+          "node": "F1_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D05",
+      "floor": 1,
+      "x": 125,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C2"
+        },
+        {
+          "node": "F1_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D06",
+      "floor": 1,
+      "x": 140,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D07",
+      "floor": 1,
+      "x": 160,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C3"
+        },
+        {
+          "node": "F1_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D08",
+      "floor": 1,
+      "x": 175,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C3"
+        },
+        {
+          "node": "F1_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D09",
+      "floor": 1,
+      "x": 190,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C4"
+        }
+      ],
+      "spot_type": "disabled"
+    },
+    {
+      "id": "F1-D10",
+      "floor": 1,
+      "x": 210,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C4"
+        },
+        {
+          "node": "F1_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D11",
+      "floor": 1,
+      "x": 225,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C4"
+        },
+        {
+          "node": "F1_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D12",
+      "floor": 1,
+      "x": 240,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D13",
+      "floor": 1,
+      "x": 260,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C5"
+        },
+        {
+          "node": "F1_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D14",
+      "floor": 1,
+      "x": 275,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C5"
+        },
+        {
+          "node": "F1_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-D15",
+      "floor": 1,
+      "x": 290,
+      "y": 35,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E01",
+      "floor": 1,
+      "x": 60,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C1"
+        },
+        {
+          "node": "F1_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E02",
+      "floor": 1,
+      "x": 75,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C1"
+        },
+        {
+          "node": "F1_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E03",
+      "floor": 1,
+      "x": 90,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C2"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E04",
+      "floor": 1,
+      "x": 110,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C2"
+        },
+        {
+          "node": "F1_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E05",
+      "floor": 1,
+      "x": 125,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C2"
+        },
+        {
+          "node": "F1_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E06",
+      "floor": 1,
+      "x": 140,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C3"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E07",
+      "floor": 1,
+      "x": 160,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C3"
+        },
+        {
+          "node": "F1_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E08",
+      "floor": 1,
+      "x": 175,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C3"
+        },
+        {
+          "node": "F1_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E09",
+      "floor": 1,
+      "x": 190,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C4"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E10",
+      "floor": 1,
+      "x": 210,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C4"
+        },
+        {
+          "node": "F1_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E11",
+      "floor": 1,
+      "x": 225,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C4"
+        },
+        {
+          "node": "F1_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E12",
+      "floor": 1,
+      "x": 240,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C5"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E13",
+      "floor": 1,
+      "x": 260,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C5"
+        },
+        {
+          "node": "F1_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E14",
+      "floor": 1,
+      "x": 275,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C5"
+        },
+        {
+          "node": "F1_C6"
+        }
+      ],
+      "spot_type": "standard"
+    },
+    {
+      "id": "F1-E15",
+      "floor": 1,
+      "x": 290,
+      "y": 15,
+      "road_y": 25,
+      "access": [
+        {
+          "node": "F1_C6"
+        }
+      ],
+      "spot_type": "standard"
+    }
+  ]
+}

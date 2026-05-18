@@ -1,0 +1,22 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+frontend/node_modules/
+
+# ── Built frontend (rebuilt by Docker / CI) ──────────────────────────────────
+frontend/dist/
+
+# ── Cached offline data (regenerated at startup per layout hash) ─────────────
+data/*.pkl
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store

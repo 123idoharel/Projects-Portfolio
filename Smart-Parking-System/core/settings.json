@@ -1,0 +1,63 @@
+{
+  "_doc": "Smart Parking v8 — Algorithm Configuration",
+  "_doc2": "All tunable parameters live here. 'offline' section is baked at startup; 'runtime' is used every tick. Restart server after changes.",
+  "selection": {
+    "_doc": "Last-resort fallback (Step 3) when garage is essentially full.",
+    "distance_window_m": 20.0,
+    "distance_equal_eps_m": 1.0,
+    "time_equal_eps_s": 2.0,
+    "time_save_min_s": 999999.0,
+    "time_save_frac": 0.2
+  },
+  "offline": {
+    "_doc": "Geometry parameters — read once at startup.",
+    "driving_speed_mps": {
+      "main": 2.0,
+      "aisle": 1.5,
+      "ramp": 1.0
+    },
+    "spot_maneuver_sec_per_meter": 0.6,
+    "window_diagonal_factor": 0.08,
+    "window_min_m": 20.0,
+    "window_max_m": 100.0,
+    "n_rows": 4,
+    "_doc_zone": "ZONE RADIUS — competition threshold for Phase 1 (initial) and Step 1 (reassignment).",
+    "_doc_zone_multi": "MULTI: zone_radius = (min_inter_dist/2) × zone_radius_frac_multi. RAISE to stay on floor longer.",
+    "zone_radius_frac_multi": 0.9,
+    "_doc_zone_single": "SINGLE: zone_radius = walk_dists[pct]. RAISE for later competition.",
+    "zone_radius_pct_single": 0.5,
+    "_doc_local": "SPIRAL BASE — starting ring for multi-instance spiral.",
+    "local_radius_frac_multi": 0.4,
+    "local_radius_pct_single": 0.3,
+    "spiral_base_radius_frac_multi": 0.3,
+    "spiral_base_radius_pct_single": 0.05,
+    "_doc_spiral": "SPIRAL EXPANSION — ring grows by this factor each step. LOWER = more symmetric instance fill.",
+    "spiral_expansion_factor": 1.5,
+    "_doc_walk_tol": "INSTANCE-SWITCHING HYSTERESIS (Phase 1 spiral) — inst-k only wins when walk saves k×tolerance vs inst-1. Lower = more symmetric.",
+    "walk_tolerance_frac": 0.15,
+    "_doc_competition": "FLOOR COMPETITION SCORING — score = drive_time + walk_weight × walk + floor_depth × floor_penalty.",
+    "floor_competition_walk_weight": 3.0,
+    "floor_penalty_frac": 0.5,
+    "floor_change_penalty_frac": 0.5,
+    "_doc_comp_radius": "COMPETITION ZONE CAP — subsequent floors only enter competition if a spot exists within zone_radius × comp_radius_growth_factor^(depth-1). depth=1 for next floor, depth=2 for two above, etc. This prevents distant spots on higher floors from winning prematurely. Single: closest-walk within cap. Multi: spiral within cap, one winner (uses comp_walk_tolerance_frac). Set comp_radius_growth_factor=9999 to disable the cap.",
+    "comp_radius_growth_factor": 1.3,
+    "_doc_comp_walk_tol": "COMPETITION SPIRAL WALK TOLERANCE — lower than walk_tolerance_frac, for more symmetric instance switching when picking the single competition representative from a multi-instance floor.",
+    "comp_walk_tolerance_frac": 0.1
+  },
+  "runtime": {
+    "_doc": "Read at runtime during every assignment.",
+    "default_vehicle_speed": 2.2,
+    "_doc_walk_weight": "Walk penalty in reassignment Step 2 scoring.",
+    "walk_weight": 5.0,
+    "_doc_floor_change_expansion": "Zone radius multiplier per completed floor change in reassignment Step 1: zone = zone_radius × floor_change_expansion^n.",
+    "floor_change_expansion": 1.8
+  },
+  "ui": {
+    "default_weights": {
+      "distance": 1.0,
+      "drive_time": 0.5,
+      "load": 2.0
+    },
+    "max_event_log": 50
+  }
+}
