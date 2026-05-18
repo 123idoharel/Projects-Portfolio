@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SCOUT ML — Football Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="scout-data.js"></script>
+<script type="text/babel" src="scout-components.jsx"></script>
+<script type="text/babel" src="scout-visuals.jsx"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#090c11; --bg2:#0f131a; --surface:#141920; --surface2:#1b2130; --surface3:#232c3d;
+    --border:#252d3e; --border2:#1b2333;
+    --text:#dde3f0; --text2:#8b95ad; --text3:#5a6480;
+    --accent:#00c896; --accent2:#4d8fff; --accent3:#f5a623;
+    --positive:#00c896; --negative:#ff5c5c;
+    --font-ui:'Plus Jakarta Sans',sans-serif; --font-data:'IBM Plex Mono',monospace;
+  }
+  html,body { height:100%; background:var(--bg); color:var(--text); font-family:var(--font-ui); overflow:hidden; }
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+  input[type=range] { -webkit-appearance:none; appearance:none; height:3px; background:transparent; outline:none; cursor:pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--accent); cursor:pointer; border:2px solid var(--bg); }
+  @keyframes pulse-ring { 0%,100%{opacity:.07;transform:scale(1)} 50%{opacity:.16;transform:scale(1.04)} }
+  @keyframes float-dot  { 0%,100%{transform:translateY(0);opacity:.4} 50%{transform:translateY(-12px);opacity:.9} }
+  @keyframes fade-up    { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  .fu1{animation:fade-up .55s ease forwards;animation-delay:.1s;opacity:0}
+  .fu2{animation:fade-up .55s ease forwards;animation-delay:.3s;opacity:0}
+  .fu3{animation:fade-up .55s ease forwards;animation-delay:.5s;opacity:0}
+  .fu4{animation:fade-up .55s ease forwards;animation-delay:.7s;opacity:0}
+  .fu5{animation:fade-up .55s ease forwards;animation-delay:.9s;opacity:0}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+// ─── HOME PAGE ────────────────────────────────────────────────────────────────
+function HomePage({ onEnter, autoLoad }) {
+  const dots  = [{x:'12%',y:'22%',d:'0s'},{x:'88%',y:'18%',d:'0.8s'},{x:'7%',y:'68%',d:'1.4s'},{x:'92%',y:'72%',d:'0.4s'},{x:'22%',y:'85%',d:'2s'},{x:'78%',y:'82%',d:'1.1s'},{x:'50%',y:'8%',d:'0.6s'},{x:'35%',y:'92%',d:'1.8s'}];
+  const stats = [{ val:'3', label:'ML Models per Player' },{ val:'9', label:'Forecast Scenarios' },{ val:'80+', label:'Stats per Season' },{ val:'JSON', label:'Native Data Format' }];
+  return (
+    <div style={{ height:'100vh', width:'100vw', background:'var(--bg)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
+      <svg style={{ position:'absolute', inset:0, width:'100%', height:'100%', opacity:0.035, pointerEvents:'none' }}>
+        <defs><pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M 48 0 L 0 0 0 48" fill="none" stroke="#00c896" strokeWidth="0.5"/></pattern></defs>
+        <rect width="100%" height="100%" fill="url(#g)"/>
+      </svg>
+      <div style={{ position:'absolute', width:600, height:600, borderRadius:'50%', border:'1px solid var(--accent)', opacity:0.06, animation:'pulse-ring 4s ease-in-out infinite', pointerEvents:'none' }}/>
+      <div style={{ position:'absolute', width:900, height:900, borderRadius:'50%', border:'1px solid var(--accent)', opacity:0.03, animation:'pulse-ring 4s ease-in-out infinite', animationDelay:'1s', pointerEvents:'none' }}/>
+      {dots.map((d,i) => <div key={i} style={{ position:'absolute', left:d.x, top:d.y, width:4, height:4, borderRadius:'50%', background:'var(--accent)', animation:`float-dot ${2.5+i*0.3}s ease-in-out infinite`, animationDelay:d.d, pointerEvents:'none' }}/>)}
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', maxWidth:600, padding:'0 24px', zIndex:1 }}>
+        <div className="fu1" style={{ marginBottom:28 }}><ScoutLogo size={72}/></div>
+        <div className="fu2" style={{ marginBottom:8 }}>
+          <div style={{ fontSize:56, fontWeight:900, letterSpacing:'-0.04em', color:'var(--text)', lineHeight:1, display:'flex', alignItems:'center', gap:14 }}>
+            SCOUT <span style={{ color:'var(--accent)' }}>ML</span>
+          </div>
+        </div>
+        <div className="fu2" style={{ marginBottom:20 }}>
+          <span style={{ fontFamily:'var(--font-data)', fontSize:11, letterSpacing:'0.2em', color:'var(--text3)', textTransform:'uppercase' }}>Football Intelligence Platform</span>
+        </div>
+        <div className="fu3" style={{ marginBottom:40 }}>
+          <p style={{ fontSize:16, color:'var(--text2)', lineHeight:1.65, maxWidth:420 }}>Identify undervalued talent before the market does. ML-powered forecasts for career peak, season-by-season trajectories, and scenario planning.</p>
+        </div>
+        <div className="fu4" style={{ marginBottom:64, display:'flex', flexDirection:'column', alignItems:'center', gap:16 }}>
+          <div style={{ fontFamily:'var(--font-data)', fontSize:11, letterSpacing:'0.18em', color:'var(--text3)', textTransform:'uppercase', marginBottom:4 }}>
+            Choose system
+          </div>
+          <div style={{ display:'flex', gap:14 }}>
+            <button onClick={() => onEnter('raw')}
+              style={{ background:'var(--surface2)', color:'var(--text)', border:'1px solid var(--border)', borderRadius:12, padding:'16px 32px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'var(--font-ui)', transition:'all .2s', textAlign:'left', minWidth:240 }}
+              onMouseEnter={e=>{ e.currentTarget.style.borderColor='var(--accent2)'; e.currentTarget.style.transform='translateY(-2px)'; }}
+              onMouseLeave={e=>{ e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.transform='translateY(0)'; }}>
+              <div style={{ color:'var(--accent2)', fontSize:11, letterSpacing:'.08em', textTransform:'uppercase', marginBottom:4 }}>Original</div>
+              <div style={{ fontSize:15, fontWeight:800 }}>Raw Models →</div>
+              <div style={{ fontSize:11, fontWeight:400, color:'var(--text3)', marginTop:4, lineHeight:1.4 }}>Direct model output, untouched.<br/>+1Y, +2Y, Peak shown separately.</div>
+            </button>
+            <button onClick={() => onEnter('calibrated')}
+              style={{ background:'var(--accent)', color:'#090c11', border:'none', borderRadius:12, padding:'16px 32px', fontSize:14, fontWeight:700, cursor:'pointer', fontFamily:'var(--font-ui)', transition:'all .2s', boxShadow:'0 0 40px rgba(0,200,150,.2)', textAlign:'left', minWidth:240 }}
+              onMouseEnter={e=>{ e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 0 60px rgba(0,200,150,.35)'; }}
+              onMouseLeave={e=>{ e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 0 40px rgba(0,200,150,.2)'; }}>
+              <div style={{ color:'rgba(9,12,17,.7)', fontSize:11, letterSpacing:'.08em', textTransform:'uppercase', marginBottom:4 }}>Recommended</div>
+              <div style={{ fontSize:15, fontWeight:800 }}>Calibrated Display →</div>
+              <div style={{ fontSize:11, fontWeight:400, color:'rgba(9,12,17,.7)', marginTop:4, lineHeight:1.4 }}>Smoothed, scout-friendly view.<br/>1-2Y &amp; Career peaks, value trend, risk pill.</div>
+            </button>
+          </div>
+          {autoLoad === 'loading' && (
+            <div style={{ marginTop:14, fontSize:12, color:'var(--text3)', fontFamily:'var(--font-data)' }}>⟳ Loading data.json…</div>
+          )}
+          {autoLoad === 'done' && (
+            <div style={{ marginTop:14, fontSize:12, color:'var(--accent)', fontFamily:'var(--font-data)' }}>✓ data.json loaded</div>
+          )}
+          {autoLoad === 'none' && (
+            <div style={{ marginTop:14, fontSize:12, color:'var(--text3)', fontFamily:'var(--font-data)' }}>No data.json found — load manually inside</div>
+          )}
+        </div>
+        <div className="fu5" style={{ display:'flex', borderTop:'1px solid var(--border)', paddingTop:32, width:'100%' }}>
+          {stats.map((s,i) => (
+            <div key={s.label} style={{ flex:1, textAlign:'center', borderRight: i<stats.length-1?'1px solid var(--border)':'none', padding:'0 16px' }}>
+              <div style={{ fontFamily:'var(--font-data)', fontSize:22, fontWeight:600, color:'var(--accent)', marginBottom:4 }}>{s.val}</div>
+              <div style={{ fontSize:11, color:'var(--text3)', lineHeight:1.3 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── PLAYER PROFILE ───────────────────────────────────────────────────────────
+function PlayerProfile({ player, onClose, photo, onPhotoUpdate, serverMode, system, allPlayers }) {
+  useEffect(() => {
+    const fn = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, [onClose]);
+
+  // ── Cohort roster ──────────────────────────────────────────────────────
+  // The Tier Standouts panel needs the FULL area roster to compute
+  // meaningful peer-group z-scores. In server mode, the parent passes the
+  // currently-displayed page (~200 players, sorted by upside) which gives
+  // a tiny + skewed cohort — Tier-4 players are barely represented because
+  // the top-200 list is dominated by Tier-1 talent. For under-represented
+  // tiers this collapses the cohort to zero and the panel shows
+  // "No metrics stand out" even when the player has real standout metrics.
+  //
+  // Fix: when the passed allPlayers is small (server mode), fetch the
+  // full JSON for the current area and use it as the cohort source.
+  // Cached at the window scope so re-opening a profile doesn't refetch.
+  const COHORT_MIN_FOR_TRUST = 1000;          // anything smaller is suspect
+  const [cohortRoster, setCohortRoster] = useState(allPlayers || []);
+  useEffect(() => {
+    const passed = allPlayers || [];
+    if (passed.length >= COHORT_MIN_FOR_TRUST) {
+      setCohortRoster(passed);
+      return;
+    }
+    // Resolve which static JSON to fetch based on the current pitch area.
+    // The server exposes both /final_players_db.json (Attack) and
+    // /final_players_db_{area}.json for the others.
+    const area = (typeof window !== 'undefined' && window.__SCOUT_AREA) || 'attack';
+    const url = area === 'attack' ? '/final_players_db.json' : `/final_players_db_${area}.json`;
+    // Window-scoped cache so all profiles in this session share one fetch.
+    const cacheKey = `__cohortRoster_${area}`;
+    if (typeof window !== 'undefined' && window[cacheKey]) {
+      setCohortRoster(window[cacheKey]);
+      return;
+    }
+    let cancelled = false;
+    fetch(url)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data || cancelled) return;
+        const list = Object.values(data).map(window.normalizePlayer).filter(Boolean);
+        if (typeof window !== 'undefined') window[cacheKey] = list;
+        setCohortRoster(list);
+      })
+      .catch(() => { /* fall back to whatever was passed; panel may be sparse */ });
+    return () => { cancelled = true; };
+  }, [allPlayers]);
+
+  const [activeSeason, setActiveSeason] = useState(0);
+  const [hovAvatar, setHovAvatar]       = useState(false);
+  const [showRawSeason,  setShowRawSeason]  = useState(false);
+  const [showRawAdv,     setShowRawAdv]     = useState(false);
+  const [showVizSeason,  setShowVizSeason]  = useState(false);
+  const [showVizAdv,     setShowVizAdv]     = useState(false);
+  const photoRef = useRef();
+
+  const history  = player.history || [];
+  const advStats = player.advancedStats || {};
+  const preds    = player.predictions || {};
+  const hasPeak  = preds.peak && preds.peak.base != null;
+  // Header chip mirrors what the table column shows: in calibrated mode,
+  // use calibratedPeaks(...).career (with floor + smoothing); in raw mode
+  // use peak.base directly. Keeps the chip 100% consistent with the row +
+  // the profile cards.
+  const headerPeakBase = hasPeak
+    ? (system === 'calibrated'
+        ? calibratedPeaks(preds, player.valueEur).career
+        : preds.peak.base)
+    : null;
+  const upside = (headerPeakBase != null && player.valueEur)
+    ? ((headerPeakBase - player.valueEur) / player.valueEur * 100).toFixed(0)
+    : null;
+  // In server mode, auto-use the server image if has_photo. Files are saved on
+  // disk by tm_id (player.id), set by normalizePlayer.
+  // Photo source: prefer user-uploaded blob (`photo` prop), fall back to
+  // /images/<tm_id>.jpg for attack (flat folder layout), or to
+  // /images/<area>/<tm_id>.jpg for other pitch areas. Attack stays in a
+  // single flat directory so existing photos don't need to move. Other
+  // teammates' photo sets live in their own subfolders to avoid tm_id
+  // collisions and keep ownership clean.
+  const area = (typeof window !== 'undefined' && window.__SCOUT_AREA) || 'attack';
+  const serverPhotoUrl = player.has_photo
+    ? (area === 'attack' ? `/images/${player.id}.jpg` : `/images/${area}/${player.id}.jpg`)
+    : null;
+  const displayPhoto = photo || serverPhotoUrl;
+  const initials = player.name.split(' ').map(w => w[0]).join('').slice(0, 2);
+
+  const handlePhoto = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => onPhotoUpdate(player.id, ev.target.result);
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  // Build historical MV for the chart. The helper dedupes per-season rows
+  // (handles national-team duplicates, mid-season transfers, multi-stint
+  // seasons) and emits chronologically ordered points: one or two per season
+  // (start + end), with each season appearing exactly once.
+  const mvHistory = buildMvHistoryPoints(history);
+
+  // Forecast extension — dashed continuation past the last historical point
+  // showing where the model thinks this player is headed.
+  //   • Peak (q50): the displayed Career Peak — floored at the current value
+  //     since "max expected career value from now" must by definition be ≥ cur.
+  //     Past-peak players have peak.base < cur, so we use the calibrated
+  //     career value (which the rest of the system displays for that reason).
+  //   • Q75:        the calibrated upper band, also floored at cur (and at
+  //     career, via the standard band-clamp). Never shows below the peak line.
+  // Both anchor onto the most-recent historical point's age + 2 seasons so
+  // the visual extension has a defensible horizontal position. The chart
+  // renders them as dashed segments to distinguish forecast from history.
+  const mvForecast = (() => {
+    if (mvHistory.length === 0) return null;
+    const last = mvHistory[mvHistory.length - 1];
+    const cur = player.valueEur || 0;
+    const bands = calibratedBands(preds, cur);
+    const peakDisplayed = bands?.career?.base;     // already floored at cur + decline guard
+    let   q75Displayed  = bands?.career?.q75;      // calibrated q75 (capped at q90, ≥ career)
+    // For Q75 specifically: when q75 is absent, fall back to raw q75 → cur
+    // floor; when present, calibratedBands already clamps it ≥ career so we
+    // get the floor for free.
+    if (q75Displayed == null) {
+      const rawQ75 = preds?.peak?.opt_q75;
+      if (rawQ75 != null) q75Displayed = Math.max(rawQ75, cur);
+    }
+    if (peakDisplayed == null && q75Displayed == null) return null;
+    return {
+      lastHistorical: last,
+      base: peakDisplayed,
+      q75:  q75Displayed,
+      age:  last.age != null ? last.age + 2 : null,
+    };
+  })();
+
+  return (
+    <div onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+      style={{ position:'fixed', inset:0, background:'rgba(9,12,17,.9)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', backdropFilter:'blur(8px)' }}>
+      <div style={{ background:'var(--bg2)', border:'1px solid var(--border)', borderRadius:18, width:'94vw', maxWidth:960, maxHeight:'93vh', overflowY:'auto', position:'relative', display:'flex', flexDirection:'column' }}>
+
+        {/* ── Header ── */}
+        <div style={{ padding:'24px 30px 16px', borderBottom:'1px solid var(--border2)', flexShrink:0 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:16 }}>
+
+            {/* Avatar + identity */}
+            <div style={{ display:'flex', alignItems:'flex-start', gap:16 }}>
+              <div onClick={() => photoRef.current.click()} onMouseEnter={()=>setHovAvatar(true)} onMouseLeave={()=>setHovAvatar(false)}
+                style={{ width:60, height:60, borderRadius:14, overflow:'hidden', flexShrink:0, position:'relative', cursor:'pointer', border:'1px solid var(--border)' }}>
+                {displayPhoto
+                  ? <img src={displayPhoto} alt={player.name} style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
+                  : <div style={{ width:'100%', height:'100%', background:'var(--surface3)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, fontFamily:'var(--font-data)', fontWeight:600, color:'var(--text2)' }}>{initials}</div>
+                }
+                {hovAvatar && <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,.55)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:18 }}>📷</div>}
+              </div>
+              <input ref={photoRef} type="file" accept="image/*" style={{ display:'none' }} onChange={handlePhoto}/>
+
+              <div>
+                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:4 }}>
+                  <div style={{ fontSize:22, fontWeight:800, color:'var(--text)', letterSpacing:'-0.025em' }}>{player.name}</div>
+                </div>
+                <div style={{ fontSize:13, color:'var(--text2)', marginBottom:10 }}>
+                  {player.club}
+                  <span style={{ color:'var(--text3)' }}> · </span>{player.league}
+                  {player.citizenships?.length > 0 && <span style={{ color:'var(--text3)' }}> · {player.citizenships.join(' / ')}</span>}
+                </div>
+                <div style={{ display:'flex', gap:7, flexWrap:'wrap' }}>
+                  <Chip label={player.position}/>
+                  {player.secondaryPosition && player.secondaryPosition !== player.position && <Chip label={player.secondaryPosition}/>}
+                  <Chip label={`Age ${player.age}`}/>
+                  <Chip label={fmtEur(player.valueEur)}/>
+                  {player.height && <Chip label={`${player.height}m`}/>}
+                  {player.foot && <Chip label={`${player.foot} foot`}/>}
+                  {player.contractExpiry && <Chip label={`Contract: ${player.contractExpiry}`}/>}
+                </div>
+              </div>
+            </div>
+
+            {/* Peak forecast — moved left of close button */}
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:4, marginLeft:'auto', flexShrink:0, marginRight:16 }}>
+              {hasPeak && headerPeakBase != null && (
+                <div style={{ textAlign:'right' }}>
+                  <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'var(--text3)', marginBottom:3 }}>Career Peak Forecast</div>
+                  <div style={{ fontFamily:'var(--font-data)', fontSize:34, fontWeight:600, color:'var(--accent)', lineHeight:1, letterSpacing:'-0.02em' }}>{fmtEur(headerPeakBase)}</div>
+                  {upside != null && <div style={{ fontSize:12, color:'var(--accent2)', marginTop:2 }}>+{upside}% upside</div>}
+                </div>
+              )}
+            </div>
+
+            {/* Close button — far right */}
+            <div style={{ flexShrink:0 }}>
+              <button onClick={onClose}
+                style={{ background:'var(--surface3)', border:'1px solid var(--border)', color:'var(--text2)', borderRadius:9, padding:'7px 14px', cursor:'pointer', fontSize:12, fontWeight:700, display:'flex', alignItems:'center', gap:6, fontFamily:'var(--font-ui)', transition:'all .15s' }}
+                onMouseEnter={e=>{ e.currentTarget.style.borderColor='var(--accent)'; e.currentTarget.style.color='var(--accent)'; }}
+                onMouseLeave={e=>{ e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.color='var(--text2)'; }}>
+                ← Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Body ── */}
+        <div style={{ padding:'0 30px 30px', flex:1 }}>
+
+          {/* ── 1. ML Model Predictions — top of the body ─────────────────── */}
+          {(preds.next1yr || preds.next2yr || preds.peak) && system !== 'calibrated' && (
+            <>
+              <div style={{ fontSize:11, fontWeight:700, letterSpacing:'.1em', textTransform:'uppercase', color:'var(--text3)', marginBottom:12, marginTop:6 }}>ML Model Predictions</div>
+              <div style={{ display:'flex', gap:12, marginBottom:26 }}>
+                {(() => {
+                  // Inject opt_q75 into the data so ModelCard renders the Q75 pill
+                  // alongside Optimistic and Pessimistic. Raw values, no calibration.
+                  const withQ75 = (m) => m ? { ...m, q75: m.opt_q75 } : null;
+                  return (
+                    <>
+                      <ModelCard title="+1 Season"    sublabel="1-Year Horizon"    data={withQ75(preds.next1yr)} accent="#4d8fff"/>
+                      <ModelCard title="+2 Seasons"   sublabel="2-Year Horizon"    data={withQ75(preds.next2yr)} accent="#ffffff"/>
+                      <ModelCard title="Career Peak"  sublabel="Peak Potential"    data={withQ75(preds.peak)}    accent="#00c896"/>
+                    </>
+                  );
+                })()}
+              </div>
+            </>
+          )}
+          {(preds.next1yr || preds.next2yr || preds.peak) && system === 'calibrated' && (() => {
+            // Calibrated profile (redesigned):
+            //   Main card  — Career Peak (full forecast window, all bands).
+            //   Companion  — "Near-Term Outlook" panel to the right with one of
+            //                three states, all sourced from peak.base vs cur
+            //                (the same signal that drives the trend column +
+            //                the career-display decline guard, so this can
+            //                never contradict the search list).
+            const bands = calibratedBands(preds, player.valueEur);
+            const careerCard = bands.career.base == null ? null : {
+              base: bands.career.base,
+              opt:  bands.career.opt,
+              pes:  bands.career.pes,
+              upside: bands.career.base && player.valueEur ? bands.career.base / player.valueEur : null,
+              risk:   preds.peak?.risk,
+            };
+            const shortDisplayed = bands.shortTerm.base;     // clamped at [cur, career]
+            const careerBase     = bands.career.base;
+            const cur            = player.valueEur || 0;
+            const peakBaseRaw    = preds?.peak?.base;
+
+            const NEAR_PEAK_THRESHOLD = 0.15;
+            const DECLINE_THRESHOLD   = 0.05;
+
+            let outlookContent = null;
+            if (cur > 0 && careerBase != null && peakBaseRaw != null) {
+              const isPastPeak = peakBaseRaw < cur * (1 - DECLINE_THRESHOLD);
+
+              let headline, subtitle, accent, valueLabel, valueAmount, deltaPct, deltaColor;
+
+              // Unified wording across all pitch areas. The three states are
+              // still computed differently (attack uses gap(career, shortTerm)
+              // when h1/h2 horizons are available; non-attack uses the proxy
+              // gap(career, cur)), but the user-facing text is identical so
+              // the panel reads the same regardless of which area is loaded.
+              if (isPastPeak) {
+                headline    = 'Already at career peak';
+                subtitle    = 'Long-term model expects this player has peaked';
+                accent      = 'var(--negative)';
+                valueLabel  = 'Career Peak Forecast';
+                valueAmount = peakBaseRaw;
+                deltaPct    = ((peakBaseRaw - cur) / cur) * 100;
+                deltaColor  = 'var(--negative)';
+              } else if (shortDisplayed != null) {
+                // Attack path — horizons available
+                const gap        = (careerBase - shortDisplayed) / careerBase;
+                const isNearPeak = gap <= NEAR_PEAK_THRESHOLD;
+                headline    = isNearPeak ? 'Near career peak' : 'Building toward peak';
+                subtitle    = isNearPeak
+                  ? 'Current value is close to the projected career ceiling'
+                  : `Career ceiling is ${(gap * 100).toFixed(0)}% above the 1-2 year forecast`;
+                accent      = isNearPeak ? '#00c896' : '#7eb0ff';
+                valueLabel  = 'Career Peak Forecast';
+                valueAmount = careerBase;
+                deltaPct    = ((careerBase - cur) / cur) * 100;
+                deltaColor  = deltaPct >= 0 ? 'var(--positive)' : 'var(--negative)';
+              } else {
+                // Non-attack path — no horizons, use career-vs-cur proxy
+                const proxyGap   = (careerBase - cur) / cur;
+                const isNearPeak = proxyGap <= NEAR_PEAK_THRESHOLD;
+                headline    = isNearPeak ? 'Near career peak' : 'Building toward peak';
+                subtitle    = isNearPeak
+                  ? 'Current value is close to the projected career ceiling'
+                  : `Career ceiling is ${(proxyGap * 100).toFixed(0)}% above current value`;
+                accent      = isNearPeak ? '#00c896' : '#7eb0ff';
+                valueLabel  = 'Career Peak Forecast';
+                valueAmount = careerBase;
+                deltaPct    = proxyGap * 100;
+                deltaColor  = deltaPct >= 0 ? 'var(--positive)' : 'var(--negative)';
+              }
+
+              if (headline != null) outlookContent = (
+                <div style={{ display:'flex', flexDirection:'column', height:'100%', justifyContent:'space-between' }}>
+                  <div>
+                    <div style={{ fontSize:10, fontWeight:700, letterSpacing:'.1em', textTransform:'uppercase', color:'var(--text3)', marginBottom:8 }}>Near-Term Outlook</div>
+                    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+                      <div style={{ width:8, height:8, borderRadius:'50%', background:accent, flexShrink:0 }}/>
+                      <div style={{ fontSize:14, fontWeight:700, color:accent }}>{headline}</div>
+                    </div>
+                    <div style={{ fontSize:11, color:'var(--text3)', lineHeight:1.4 }}>{subtitle}</div>
+                  </div>
+                  <div style={{ marginTop:14 }}>
+                    <div style={{ fontSize:9, fontWeight:700, letterSpacing:'.08em', textTransform:'uppercase', color:'var(--text3)', marginBottom:4 }}>{valueLabel}</div>
+                    <div style={{ display:'flex', alignItems:'baseline', gap:10 }}>
+                      <div style={{ fontFamily:'var(--font-data)', fontSize:24, fontWeight:600, color:accent, lineHeight:1, letterSpacing:'-0.01em' }}>{fmtEur(valueAmount)}</div>
+                      <div style={{ fontFamily:'var(--font-data)', fontSize:11, color: deltaColor, fontWeight:600 }}>
+                        {deltaPct >= 0 ? '+' : ''}{deltaPct.toFixed(0)}%
+                      </div>
+                    </div>
+                    <div style={{ fontSize:10, color:'var(--text3)', marginTop:3 }}>vs. current value</div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <>
+                <div style={{ fontSize:11, fontWeight:700, letterSpacing:'.1em', textTransform:'uppercase', color:'var(--text3)', marginBottom:12, marginTop:6 }}>
+                  ML Model Predictions
+                  <span style={{ fontWeight:400, color:'var(--text3)', fontSize:10, marginLeft:8, textTransform:'none', letterSpacing:0 }}>
+                    (calibrated display)
+                  </span>
+                </div>
+                <div style={{ display:'flex', gap:12, marginBottom:26, alignItems:'stretch' }}>
+                  <div style={{ flex:'1 1 60%', minWidth:0 }}>
+                    <ModelCard title="Career Peak" sublabel="Full Forecast Window" data={careerCard} accent="#00c896"/>
+                  </div>
+                  {outlookContent && (
+                    <div style={{ flex:'1 1 40%', minWidth:0, background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:12, padding:'20px 22px' }}>
+                      {outlookContent}
+                    </div>
+                  )}
+                </div>
+              </>
+            );
+          })()}
+
+          {/* ── 2. Season Statistics — collapsible, closed by default ───────── */}
+          {history.length > 0 && (
+            <CollapsibleSection title="Season Statistics" badge={`${history.length} seasons`}
+              actions={[
+                <SectionActionBtn key="raw"  label="VIEW RAW"        onClick={() => setShowRawSeason(true)}/>,
+                <SectionActionBtn key="viz"  label="VISUAL ANALYSIS" color="var(--accent3)" onClick={() => setShowVizSeason(true)}/>,
+              ]}>
+              {/* Season selector */}
+              <div style={{ display:'flex', gap:6, marginBottom:16, flexWrap:'wrap' }}>
+                {history.map((s, i) => (
+                  <button key={i} onClick={() => setActiveSeason(i)}
+                    style={{ background: i===activeSeason ? 'var(--accent2)' : 'var(--surface3)', border:`1px solid ${i===activeSeason ? 'var(--accent2)' : 'var(--border)'}`, color: i===activeSeason ? '#fff' : 'var(--text2)', borderRadius:7, padding:'4px 12px', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'var(--font-ui)', transition:'all .15s' }}>
+                    {s._season_year}
+                    {s.team && s.team !== player.club && <span style={{ opacity:.65, marginLeft:5 }}>({s.team.split(' ').slice(-1)[0]})</span>}
+                  </button>
+                ))}
+              </div>
+              {/* Club + Value row for selected season */}
+              {history[activeSeason] && (
+                <div style={{ display:'flex', gap:10, marginBottom:14, flexWrap:'wrap' }}>
+                  <span style={{ fontSize:12, color:'var(--text3)' }}>
+                    <span style={{ color:'var(--text2)', fontWeight:600 }}>{history[activeSeason].team}</span>
+                    <span style={{ color:'var(--text3)' }}> · {history[activeSeason]._league}</span>
+                  </span>
+                  {history[activeSeason].mv_end != null && (
+                    <span style={{ fontFamily:'var(--font-data)', fontSize:12, color:'var(--accent)', background:'rgba(0,200,150,.07)', border:'1px solid rgba(0,200,150,.18)', borderRadius:5, padding:'1px 8px' }}>
+                      {fmtEur(history[activeSeason].mv_end)} market value
+                    </span>
+                  )}
+                </div>
+              )}
+              {history[activeSeason] && <SeasonStatsTable seasonData={history[activeSeason]}/>}
+            </CollapsibleSection>
+          )}
+
+          {/* ── 3. Advanced Metrics — collapsible, closed by default ────────── */}
+          {Object.keys(advStats).length > 0 && (
+            <CollapsibleSection title="Advanced Metrics" badge="current season · p90"
+              actions={[
+                <SectionActionBtn key="raw"  label="VIEW RAW"        onClick={() => setShowRawAdv(true)}/>,
+                <SectionActionBtn key="viz"  label="VISUAL ANALYSIS" color="var(--accent3)" onClick={() => setShowVizAdv(true)}/>,
+              ]}>
+              <AdvancedMetricsPanel advStats={advStats}/>
+            </CollapsibleSection>
+          )}
+
+          {/* ── 4. Key Trends for the Model — position-aware "what's changed
+              last season" comparison vs prior season OR vs career best, with
+              competition tabs (Domestic / Club Tournament / International).
+              Grounds the model's peak forecast in observable performance
+              changes the scout can verify. */}
+          <KeyDrivers history={history} position={player.position}/>
+
+          {/* ── 5. Tier Standouts — peer-group comparison using precomputed
+              z-scores from the advanced_stats pipeline. Surfaces metrics
+              where the player ranks notably above their tier average.
+              Different question from Key Trends: not "what changed for the
+              player" but "where does the player stand vs their tier peers". */}
+          <TierStandouts player={player} advancedStats={advStats} position={player.position} league={player.league} allPlayers={cohortRoster || []}/>
+
+          {/* ── 6. Market Value History — at the bottom.
+              Chart is enriched with the model's career-peak forecast as a
+              dashed extension to the right, anchored on the player's last
+              historical age + 2 seasons. Shows both base (q50) and q75
+              upper-band so the scout sees the implied trajectory range.
+              Hidden when no historical MV data is available. */}
+          {mvHistory.length >= 1 && (
+            <div style={{ marginTop:18 }}>
+              <div style={{ fontSize:11, fontWeight:700, letterSpacing:'.1em', textTransform:'uppercase', color:'var(--text3)', marginBottom:10 }}>Market Value History</div>
+              <div style={{ background:'var(--surface)', border:'1px solid var(--border2)', borderRadius:12, padding:'16px' }}>
+                <MvSparkline data={mvHistory} forecast={mvForecast}/>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+
+      {/* ── Overlays ── */}
+      {showRawSeason  && <RawDataOverlay        type="season"   player={player} activeSeason={activeSeason} onClose={() => setShowRawSeason(false)}/>}
+      {showRawAdv     && <RawDataOverlay        type="advanced" player={player} activeSeason={activeSeason} onClose={() => setShowRawAdv(false)}/>}
+      {showVizSeason  && <VisualAnalysisOverlay type="season"   player={player} onClose={() => setShowVizSeason(false)}/>}
+      {showVizAdv     && <VisualAnalysisOverlay type="advanced" player={player} onClose={() => setShowVizAdv(false)}/>}
+    </div>
+  );
+}
+
+// ─── MV SPARKLINE ─────────────────────────────────────────────────────────────
+// Historical market-value trajectory + forecast extension chart.
+//
+// `data`: chronologically-ordered points from buildMvHistoryPoints().
+//   [{ season: '23/24', age: 21, value: <eur>, kind: 'start'|'end' }, ...]
+//   Each season appears once or twice (start + end). The season label is
+//   drawn ONCE per unique season (between its points) so a season with two
+//   points doesn't get its label duplicated.
+//
+// `forecast` (optional): { lastHistorical, base, q75, age } — adds dashed
+//   forward-projecting segments from the last historical point to the
+//   model's Career Peak (base, q50) and Optimistic Q75.
+function MvSparkline({ data, forecast }) {
+  if (!data || data.length === 0) return null;
+
+  const W = 720, H = 200, PAD = { t: 30, r: 90, b: 52, l: 70 };
+  const iW = W - PAD.l - PAD.r, iH = H - PAD.t - PAD.b;
+
+  // Combine historical + (optional) forecast values for shared y-axis scale
+  const allValues = data.map(d => d.value);
+  if (forecast?.base != null) allValues.push(forecast.base);
+  if (forecast?.q75  != null) allValues.push(forecast.q75);
+  const maxV = Math.max(...allValues) * 1.18;
+
+  // X positions: history points span 0..(histN-1), forecast lives at histN+0.6
+  // (close enough to the last historical point that the visual extension
+  // reads as "next step" rather than "a year later in another universe").
+  const histN = data.length;
+  const hasForecast = forecast != null && (forecast.base != null || forecast.q75 != null);
+  const forecastSlotPos = histN - 1 + 1.3;   // offset right of last hist
+  const totalSlots = hasForecast ? forecastSlotPos : (histN - 1);
+
+  const xS = (slot) => {
+    if (totalSlots <= 0) return PAD.l + iW / 2;
+    return PAD.l + (slot / totalSlots) * iW;
+  };
+  const yS = (v) => PAD.t + iH - (v / maxV) * iH;
+
+  // Historical path
+  const histPath = data.map((d, i) => `${i===0?'M':'L'}${xS(i).toFixed(1)},${yS(d.value).toFixed(1)}`).join(' ');
+  const area = histN > 1
+    ? histPath + ` L${xS(histN-1).toFixed(1)},${PAD.t+iH} L${xS(0).toFixed(1)},${PAD.t+iH} Z`
+    : null;
+
+  // Identify the highest and lowest historical points for color emphasis.
+  const histValues = data.map(d => d.value);
+  const maxIdx = histValues.indexOf(Math.max(...histValues));
+  const minIdx = histValues.indexOf(Math.min(...histValues));
+  const hasAge = data.some(d => d.age != null);
+
+  // Build "one label per unique season" mapping. For each unique season,
+  // place its label at the average x of all its points (so a two-point
+  // season puts the label between the two dots).
+  const seasonLabelGroups = [];
+  data.forEach((d, i) => {
+    const last = seasonLabelGroups[seasonLabelGroups.length - 1];
+    if (last && last.season === d.season) {
+      last.indices.push(i);
+    } else {
+      seasonLabelGroups.push({ season: d.season, age: d.age, indices: [i] });
+    }
+  });
+
+  // Compact EUR formatter for in-chart labels (€2.5M, €450k, €1.2B-style)
+  const fmtCompact = (v) => {
+    if (v == null) return '';
+    const abs = Math.abs(v);
+    if (abs >= 1e9) return `€${(v/1e9).toFixed(1)}B`;
+    if (abs >= 1e6) return `€${(v/1e6).toFixed(v >= 10e6 ? 0 : 1)}M`;
+    if (abs >= 1e3) return `€${Math.round(v/1e3)}k`;
+    return `€${Math.round(v)}`;
+  };
+
+  // Forecast endpoints
+  const fxLast  = forecast?.lastHistorical;
+  const fxX     = hasForecast ? xS(forecastSlotPos) : null;
+  const fxBaseY = hasForecast && forecast.base != null ? yS(forecast.base) : null;
+  const fxQ75Y  = hasForecast && forecast.q75  != null ? yS(forecast.q75)  : null;
+  const fxAnchorX = hasForecast ? xS(histN - 1) : null;
+  const fxAnchorY = hasForecast ? yS(fxLast.value) : null;
+
+  return (
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ display:'block' }}>
+      <defs>
+        <linearGradient id="mvg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#4d8fff" stopOpacity="0.35"/>
+          <stop offset="100%" stopColor="#4d8fff" stopOpacity="0"/>
+        </linearGradient>
+      </defs>
+
+      {/* Subtle horizontal gridlines */}
+      {[0, 0.25, 0.5, 0.75, 1].map((t, i) => {
+        const v = maxV * (1 - t);
+        const y = PAD.t + t * iH;
+        return (
+          <g key={i}>
+            <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
+                  stroke="#1f2a3a" strokeWidth="1" strokeDasharray={t === 0 || t === 1 ? '0' : '2,3'}/>
+            {(t === 0 || t === 1 || t === 0.5) && (
+              <text x={PAD.l - 8} y={y + 4} textAnchor="end" fill="#5a6480" fontSize="10" fontFamily="IBM Plex Mono">{fmtCompact(v)}</text>
+            )}
+          </g>
+        );
+      })}
+
+      {/* Vertical divider between history and forecast */}
+      {hasForecast && (
+        <line x1={fxAnchorX + 8} y1={PAD.t} x2={fxAnchorX + 8} y2={PAD.t + iH}
+              stroke="#2a3445" strokeWidth="1" strokeDasharray="3,4"/>
+      )}
+
+      {/* Historical area + line */}
+      {area && <path d={area} fill="url(#mvg)"/>}
+      <path d={histPath} fill="none" stroke="#4d8fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+
+      {/* Forecast extension — two dashed segments from last historical point */}
+      {hasForecast && (
+        <>
+          {fxQ75Y != null && (
+            <>
+              <line x1={fxAnchorX} y1={fxAnchorY} x2={fxX} y2={fxQ75Y}
+                    stroke="#7eb0ff" strokeWidth="1.8" strokeDasharray="4,4" opacity="0.85"/>
+              <circle cx={fxX} cy={fxQ75Y} r="4" fill="#7eb0ff" stroke="#090c11" strokeWidth="1.5"/>
+              <text x={fxX + 8} y={fxQ75Y + 4} fill="#7eb0ff" fontSize="10" fontWeight="700" fontFamily="IBM Plex Mono">
+                {fmtCompact(forecast.q75)}
+              </text>
+              <text x={fxX + 8} y={fxQ75Y + 16} fill="#5a6480" fontSize="9" fontFamily="Plus Jakarta Sans">
+                Q75
+              </text>
+            </>
+          )}
+          {fxBaseY != null && (
+            <>
+              <line x1={fxAnchorX} y1={fxAnchorY} x2={fxX} y2={fxBaseY}
+                    stroke="#00c896" strokeWidth="2" strokeDasharray="5,4"/>
+              <circle cx={fxX} cy={fxBaseY} r="4.5" fill="#00c896" stroke="#090c11" strokeWidth="1.5"/>
+              <text x={fxX + 8} y={fxBaseY + 4} fill="#00c896" fontSize="10" fontWeight="700" fontFamily="IBM Plex Mono">
+                {fmtCompact(forecast.base)}
+              </text>
+              <text x={fxX + 8} y={fxBaseY + 16} fill="#5a6480" fontSize="9" fontFamily="Plus Jakarta Sans">
+                Peak
+              </text>
+            </>
+          )}
+        </>
+      )}
+
+      {/* Historical points + value labels */}
+      {data.map((d, i) => {
+        const x = xS(i), y = yS(d.value);
+        const isHigh = i === maxIdx && histN > 1;
+        const isLow  = i === minIdx && histN > 1;
+        const dotColor = isHigh ? '#00c896' : (isLow ? '#f5a623' : '#4d8fff');
+        return (
+          <g key={i}>
+            <circle cx={x} cy={y} r={isHigh || isLow ? 5 : 4} fill={dotColor} stroke="#090c11" strokeWidth="1.5"/>
+            <text x={x} y={y - 10} textAnchor="middle" fill={dotColor}
+                  fontSize="10" fontWeight="700" fontFamily="IBM Plex Mono">
+              {fmtCompact(d.value)}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* One season-label group per unique season (placed at average x of its points) */}
+      {seasonLabelGroups.map((g, i) => {
+        const avgX = g.indices.reduce((sum, idx) => sum + xS(idx), 0) / g.indices.length;
+        return (
+          <g key={i}>
+            <text x={avgX} y={H - (hasAge ? 26 : 8)} textAnchor="middle" fill="#9ba3b8"
+                  fontSize="10" fontFamily="Plus Jakarta Sans">
+              {g.season}
+            </text>
+            {hasAge && g.age != null && (
+              <text x={avgX} y={H - 10} textAnchor="middle" fill="#5a6480"
+                    fontSize="9" fontFamily="IBM Plex Mono">
+                age {g.age}
+              </text>
+            )}
+          </g>
+        );
+      })}
+
+      {/* Forecast x-axis label */}
+      {hasForecast && (
+        <>
+          <text x={fxX} y={H - (hasAge ? 26 : 8)} textAnchor="middle" fill="#7eb0ff"
+                fontSize="10" fontWeight="700" fontFamily="Plus Jakarta Sans">
+            forecast
+          </text>
+          {hasAge && (
+            <text x={fxX} y={H - 10} textAnchor="middle" fill="#5a6480"
+                  fontSize="9" fontFamily="IBM Plex Mono">
+              future
+            </text>
+          )}
+        </>
+      )}
+
+      {/* Y-axis legend in bottom-left */}
+      {hasAge && (
+        <text x={PAD.l - 8} y={H - 10} textAnchor="end" fill="#5a6480" fontSize="9" fontFamily="IBM Plex Mono">
+          season · age
+        </text>
+      )}
+    </svg>
+  );
+}
+
+// ─── SEARCH PANEL ─────────────────────────────────────────────────────────────
+// Original system: slider-based filters with bounded ranges.
+const DEFAULT_FILTERS_RAW = {
+  positions: [], leagues: [], teams: [], nationalities: [],
+  age: [15, 42],
+  currentValue: [0, 200],   // €M
+  peakValue: [0, 500],      // €M
+  bestPeak: false,
+  contractYearsMax: null,
+};
+// Calibrated system: From/To boxes with null = unbounded.
+const DEFAULT_FILTERS_CALIBRATED = {
+  positions: [], leagues: [], teams: [], nationalities: [],
+  age:          [null, null],
+  currentValue: [null, null],
+  peakValue:    [0, 500],
+  contractYearsMax: null,
+};
+
+function SearchPanel({ filters, setFilters, leaguesList, teamsList, nationalitiesList, system, defaults, onBestSort }) {
+  const setPeak    = (v) => setFilters(f => ({ ...f, peakValue: v, bestPeak: false }));
+  const toggleBest = () => {
+    const next = !filters.bestPeak;
+    setFilters(f => ({ ...f, bestPeak: next, peakValue: next ? [BEST_PEAK_CUTOFF_EUR / 1e6, 500] : [0, 500] }));
+  };
+  const reset = () => setFilters(defaults);
+
+  // When league selection changes, prune any selected teams that are no
+  // longer reachable from the new league set.
+  const setLeagues = (newLeagues) => {
+    setFilters(f => {
+      const teamSet = new Set(teamsList);
+      const cleaned = (f.teams || []).filter(t => teamSet.has(t));
+      // If user just deselected all leagues, clear teams entirely
+      const teams = newLeagues.length === 0 ? [] : cleaned;
+      return { ...f, leagues: newLeagues, teams };
+    });
+  };
+
+  return (
+    <div style={{ width:268, flexShrink:0, background:'var(--surface)', borderRight:'1px solid var(--border)', overflowY:'auto', padding:'20px 16px' }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:22 }}>
+        <span style={{ fontSize:13, fontWeight:700, color:'var(--text)' }}>Filters</span>
+        <button onClick={reset} style={{ background:'none', border:'none', color:'var(--text3)', fontSize:11, fontWeight:600, letterSpacing:'.06em', cursor:'pointer', fontFamily:'var(--font-ui)' }}>RESET</button>
+      </div>
+
+      {system === 'calibrated' && (
+        <button onClick={onBestSort}
+          style={{ width:'100%', marginBottom:18, padding:'10px 12px', background:'rgba(0,200,150,.08)',
+                   border:'1px solid rgba(0,200,150,.35)', color:'var(--accent)',
+                   borderRadius:8, fontSize:11, fontWeight:700, letterSpacing:'.08em',
+                   cursor:'pointer', fontFamily:'var(--font-ui)', textTransform:'uppercase' }}>
+          ★ Best — Sort by Career Peak ↓
+        </button>
+      )}
+
+      <SearchableSelect label="Position"    options={POSITIONS_LIST}    selected={filters.positions}     onChange={v=>setFilters(f=>({...f,positions:v}))}     multi={true}/>
+      <SearchableSelect label="League"      options={leaguesList}       selected={filters.leagues}       onChange={setLeagues}                                multi={true}/>
+      {filters.leagues.length > 0 && teamsList.length > 0 && (
+        <SearchableSelect label={`Team  (in ${filters.leagues.length === 1 ? filters.leagues[0] : filters.leagues.length + ' leagues'})`}
+                          options={teamsList}
+                          selected={filters.teams || []}
+                          onChange={v=>setFilters(f=>({...f, teams: v}))}
+                          multi={true}/>
+      )}
+      <SearchableSelect label="Nationality" options={nationalitiesList} selected={filters.nationalities} onChange={v=>setFilters(f=>({...f,nationalities:v}))} multi={true}/>
+
+      {system === 'calibrated' ? (
+        <>
+          <MinMaxFilter label="Age (years)" suffix="" step={1} min={0}
+            value={filters.age}
+            onChange={v => setFilters(f => ({ ...f, age: v }))}/>
+          <MinMaxFilter label="Current Value (€M)" suffix="M"
+            value={filters.currentValue}
+            onChange={v => setFilters(f => ({ ...f, currentValue: v }))}/>
+          <RangeFilter label="Career Peak (€M)" min={0} max={500} step={1}
+            value={filters.peakValue} onChange={v=>setFilters(f=>({...f,peakValue:v}))}
+            format={v=>`€${v}M`}/>
+        </>
+      ) : (
+        <>
+          <RangeFilter label="Age" min={15} max={42} value={filters.age} onChange={v=>setFilters(f=>({...f,age:v}))}/>
+          <RangeFilter label="Current Value (€M)" min={0} max={200} step={0.5}
+            value={filters.currentValue} onChange={v=>setFilters(f=>({...f,currentValue:v}))}
+            format={v=>`€${v}M`}/>
+          <RangeFilter label="Predicted Peak (€M)" min={0} max={500} step={1}
+            value={filters.peakValue} onChange={setPeak}
+            format={v=>`€${v}M`}
+            showBest bestActive={filters.bestPeak} onBest={toggleBest}
+            bestLabel={`Peak ≥ ${fmtEur(BEST_PEAK_CUTOFF_EUR)}`}/>
+        </>
+      )}
+
+      {/* ── Contract remaining filter (shared) ── */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text3)', marginBottom: 9 }}>
+          Contract Remaining
+          <span style={{ fontWeight: 400, color: 'var(--text3)', fontSize: 10, marginLeft: 6 }}>(from May 2026)</span>
+        </div>
+        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+          {CONTRACT_FILTER_OPTIONS.map(opt => {
+            const active = filters.contractYearsMax === opt.maxYears;
+            return (
+              <button key={opt.label} onClick={() => setFilters(f => ({ ...f, contractYearsMax: opt.maxYears }))}
+                style={{ background: active ? 'rgba(77,143,255,.15)' : 'var(--surface2)', border: `1px solid ${active ? 'var(--accent2)' : 'var(--border)'}`, color: active ? 'var(--accent2)' : 'var(--text3)', borderRadius: 6, padding: '4px 9px', fontSize: 11, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-ui)', transition: 'all .15s' }}>
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SEARCH PAGE ──────────────────────────────────────────────────────────────
+//
+// Pitch areas. Only 'attack' is wired up today; the others are placeholder
+// pills that the user can switch to once teammates ship their JSONs. Each
+// area is loaded from its own file: final_players_db_<area>.json. The
+// frontend tolerates absence of horizon_1y / horizon_2y model blocks (other
+// areas may only ship peak_potential), so the calibrated calculations
+// degrade gracefully — Trend column derives from peak.base alone, the
+// Outlook panel hides its Near Peak / Building branches and only renders
+// Past Peak when applicable, the profile summary drops the 1-2 Year Peak
+// chip.
+// Default pitch areas. The 'ready' flags here are the static defaults; on
+// boot we ask /api/meta which areas the server actually has loaded and flip
+// 'ready' to match. This way, if your teammate drops final_players_db_defense.json
+// into the server's working directory, restart the server, and the Defense
+// pill activates automatically without code changes.
+const PITCH_AREAS_DEFAULT = [
+  { id: 'attack',   label: 'Attack',   ready: true  },
+  { id: 'midfield', label: 'Midfield', ready: true  },
+  { id: 'defense',  label: 'Defense',  ready: false },
+  { id: 'gk',       label: 'GK',       ready: false },
+];
+
+function SearchPage({ players, setPlayers, onHome, photos, onPhotoUpdate, serverMode, setServerMode, serverMeta, setServerMeta, autoLoad, system }) {
+  const defaultFilters = system === 'calibrated' ? DEFAULT_FILTERS_CALIBRATED : DEFAULT_FILTERS_RAW;
+  const [area,          setArea]          = useState('attack');
+  // Areas list — defaults to PITCH_AREAS_DEFAULT, reconciled with what
+  // the server says is actually loaded (via meta.available_areas).
+  const [pitchAreas,    setPitchAreas]    = useState(PITCH_AREAS_DEFAULT);
+
+  // Whenever serverMeta updates and reports the available areas, flip the
+  // ready flags on PITCH_AREAS_DEFAULT to match what the server has loaded.
+  // Local mode reports the same info via window.__BOOT_PITCH_AREAS.
+  useEffect(() => {
+    const fromServer = serverMeta && Array.isArray(serverMeta.available_areas)
+      ? new Set(serverMeta.available_areas) : null;
+    const fromLocal  = (typeof window !== 'undefined' && window.__BOOT_PITCH_AREAS instanceof Set)
+      ? window.__BOOT_PITCH_AREAS : null;
+    if (!fromServer && !fromLocal) return;
+    setPitchAreas(PITCH_AREAS_DEFAULT.map(a => {
+      const isPresent = (fromServer && fromServer.has(a.id)) || (fromLocal && fromLocal.has(a.id));
+      return { ...a, ready: isPresent || a.ready };
+    }));
+  }, [serverMeta]);
+  // Remember whether the FastAPI server was originally reachable, so we can
+  // return to server mode when the user switches back to Attack.
+  const initialServerMode = useRef(serverMode);
+  const [filters,       setFilters]       = useState(defaultFilters);
+  const [sortKey,       setSortKey]       = useState(system === 'calibrated' ? 'peakCareer' : 'peak');
+  const [sortDir,       setSortDir]       = useState(-1);
+  const [selected,      setSelected]      = useState(null);
+  const [search,        setSearch]        = useState('');
+  const [urlInput,      setUrlInput]      = useState('');
+  const [urlStatus,     setUrlStatus]     = useState('');
+  const [serverPlayers, setServerPlayers] = useState([]);
+  const [serverTotal,   setServerTotal]   = useState(0);
+  const [apiLoading,    setApiLoading]    = useState(false);
+  const fileRef = useRef();
+
+  // Switching area. The FastAPI server (when running) only knows about the
+  // Attack JSON — it loads final_players_db.json at startup. Other areas
+  // (Midfield/Defense/GK) are local files that the frontend fetches directly.
+  //
+  // Behavior:
+  //   - Switch to Attack:    if the server was originally reachable, restore
+  //                          server mode (re-fetch /api/meta to refresh).
+  //                          Otherwise stay in local mode.
+  //   - Switch to non-Attack: always fetch the area's JSON locally and force
+  //                          local mode for the duration of that area.
+  //
+  // Filters, search, selection reset on switch. Sort key persists if valid.
+  const switchArea = (newArea) => {
+    if (newArea === area) return;
+    if (!pitchAreas.find(a => a.id === newArea)?.ready) return;
+    setArea(newArea);
+    setFilters(defaultFilters);
+    setSelected(null);
+    setSearch('');
+
+    if (initialServerMode.current) {
+      // Server mode: ask the API for this area's meta. If the server has
+      // it loaded, switch into server mode for this area. Otherwise fall
+      // through to local fetch.
+      fetch(`/api/meta?area=${newArea}`)
+        .then(r => { if (!r.ok) throw new Error(`server has no area '${newArea}'`); return r.json(); })
+        .then(meta => {
+          window.__SCOUT_AREA = newArea;
+          setServerMeta(meta);
+          setServerMode(true);
+          if (meta && typeof meta.opt_ref_scale_eur === 'number' && meta.opt_ref_scale_eur > 0) {
+            window.__OPT_REF_FROM_SERVER = meta.opt_ref_scale_eur;
+          } else {
+            window.__OPT_REF_FROM_SERVER = undefined;
+          }
+        })
+        .catch(err => {
+          console.warn(`Server doesn't serve area '${newArea}', falling back to local file:`, err);
+          loadAreaLocally(newArea);
+        });
+    } else {
+      // No server available — local fetch.
+      loadAreaLocally(newArea);
+    }
+  };
+
+  const loadAreaLocally = (areaId) => {
+    const file = areaId === 'attack' ? 'final_players_db.json' : `final_players_db_${areaId}.json`;
+    fetch(file)
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status} — ${file} not found`);
+        return r.json();
+      })
+      .then(raw => {
+        // JSON format: { tm_id: { metadata, models, history_data, advanced_stats } }
+        // or array form. Convert to array and normalize.
+        const entries = Array.isArray(raw) ? raw : Object.values(raw);
+        const rawCount = entries.length;
+        const arr = entries.map(normalizePlayer).filter(Boolean);
+        const skipped = rawCount - arr.length;
+
+        if (arr.length === 0) {
+          console.error(`No players parsed from ${file}`);
+          alert(`Loaded ${file} but found no valid players. Check the JSON structure.`);
+          return;
+        }
+        // Tell the data layer which area is active. This drives the
+        // optimistic display rule:
+        //   attack          → min(q75, smoothed_q90)   (shrinkage applies)
+        //   non-attack       → min(q75, raw q90)        (no shrinkage)
+        // Smoothing was tuned for the attacker value distribution and would
+        // mis-calibrate the optimistic ceiling for other pitch areas.
+        window.__SCOUT_AREA = areaId;
+        setPlayers(arr);
+        setServerMode(false);
+        setServerMeta(null);
+        // Recompute the optimistic reference scale R from this population.
+        // Only used by Attack's smoothed-q90 path. Non-attack areas ignore R.
+        // We still compute it so a later Attack switch picks it back up.
+        computeOptimisticRefScale(arr);
+        window.__OPT_REF_FROM_SERVER = undefined;
+
+        // Print a load summary to the browser console so the user can see
+        // (in devtools) how many entries were dropped during normalize and
+        // why. Most common reason: missing name (Transfermarkt profile-page
+        // scrape returned no descriptive metadata for that tm_id).
+        console.info(
+          `[Scout ML] Loaded area '${areaId}': %c${arr.length.toLocaleString()}%c players ` +
+          `(${skipped.toLocaleString()} skipped of ${rawCount.toLocaleString()} raw entries` +
+          `${skipped > 0 ? ' — most likely missing name in metadata' : ''})`,
+          'font-weight:700;color:#00c896', 'font-weight:400;color:inherit'
+        );
+      })
+      .catch(err => {
+        console.error(`Failed to load area '${areaId}' from ${file}:`, err);
+        alert(`Could not load ${file}.\n${err.message}\n\nMake sure the file exists in web_system/ alongside scout.html.`);
+      });
+  };
+
+  // Dynamic filter lists — from serverMeta (server mode) or derived from local players
+  const leaguesList = useMemo(() =>
+    serverMeta ? serverMeta.leagues
+               : [...new Set(players.map(p => p.league))].filter(Boolean).sort(),
+    [players, serverMeta]);
+
+  const nationalitiesList = useMemo(() =>
+    serverMeta ? serverMeta.nationalities
+               : [...new Set(players.flatMap(p => p.citizenships || []))].filter(Boolean).sort(),
+    [players, serverMeta]);
+
+  // Teams list — only populated when at least one league is selected. Server
+  // mode pulls teams from serverMeta.teams_by_league (a dict league→[teams]).
+  // Local mode derives from in-memory players matching the selected leagues.
+  // Listed alphabetically; '?' / blank teams excluded.
+  const teamsList = useMemo(() => {
+    if (!filters.leagues.length) return [];
+    if (serverMode && serverMeta?.teams_by_league) {
+      const set = new Set();
+      for (const lg of filters.leagues) {
+        for (const t of (serverMeta.teams_by_league[lg] || [])) set.add(t);
+      }
+      return [...set].sort();
+    }
+    if (serverMode) return [];   // server didn't expose teams_by_league
+    const set = new Set();
+    const sel = new Set(filters.leagues);
+    for (const p of players) {
+      if (sel.has(p.league) && p.club && p.club !== '?') set.add(p.club);
+    }
+    return [...set].sort();
+  }, [filters.leagues, players, serverMeta, serverMode]);
+
+  // ── Build API query string (server mode) ─────────────────────────────────
+  const apiQuery = useMemo(() => {
+    if (!serverMode) return null;
+    const p = new URLSearchParams();
+    p.set('area',                       area);
+    if (search)                       p.set('q',             search);
+    if (filters.positions.length)     p.set('positions',     filters.positions.join(','));
+    if (filters.leagues.length)       p.set('leagues',       filters.leagues.join(','));
+    if ((filters.teams || []).length) p.set('teams',         filters.teams.join(','));
+    if (filters.nationalities.length) p.set('nationalities', filters.nationalities.join(','));
+    if (filters.age[0] != null)          p.set('age_min', filters.age[0]);
+    if (filters.age[1] != null)          p.set('age_max', filters.age[1]);
+    if (filters.currentValue[0] != null) p.set('value_min', filters.currentValue[0] * 1_000_000);
+    if (filters.currentValue[1] != null) p.set('value_max', filters.currentValue[1] * 1_000_000);
+    p.set('peak_min',  filters.peakValue[0] * 1_000_000);
+    p.set('peak_max',  filters.peakValue[1] * 1_000_000);
+    if (filters.contractYearsMax !== null) p.set('contract_max_years', filters.contractYearsMax);
+    p.set('sort_by',   sortKey);
+    p.set('sort_dir',  sortDir);
+    p.set('system',    system);   // raw or calibrated — controls server-side peak filter/sort
+    p.set('limit',     200);
+    return p.toString();
+  }, [serverMode, area, search, filters, sortKey, sortDir, system]);
+
+  const debouncedQuery = useDebounce(apiQuery, 350);
+
+  useEffect(() => {
+    if (!serverMode || debouncedQuery === null) return;
+    setApiLoading(true);
+    fetch(`/api/players?${debouncedQuery}`)
+      .then(r => r.json())
+      .then(data => {
+        setServerPlayers(data.players || []);
+        setServerTotal(data.total     || 0);
+        setApiLoading(false);
+      })
+      .catch(() => setApiLoading(false));
+  }, [debouncedQuery, serverMode]);
+
+  // ── Parse + ingest raw JSON (local mode) ─────────────────────────────────
+  const ingestRaw = (raw) => {
+    const entries = Array.isArray(raw) ? raw : Object.values(raw);
+    const parsed  = entries.map(normalizePlayer).filter(Boolean);
+    if (parsed.length > 0) {
+      setPlayers(parsed);
+      computeOptimisticRefScale(parsed);
+      setFilters(defaultFilters);
+      setSelected(null);
+      return true;
+    }
+    return false;
+  };
+
+  const loadFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        if (!ingestRaw(JSON.parse(ev.target.result))) alert('No valid player entries found.');
+      } catch (err) { alert('Invalid JSON: ' + err.message); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const loadUrl = () => {
+    const url = urlInput.trim();
+    if (!url) return;
+    setUrlStatus('loading');
+    fetch(url)
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(raw => {
+        if (!ingestRaw(raw)) throw new Error('No valid players found');
+        setUrlStatus('');
+        setUrlInput('');
+      })
+      .catch(err => setUrlStatus('error: ' + err.message));
+  };
+
+  // ── Sort (local mode only — server handles its own sorting) ──────────────
+  const handleSort = (k) => { if (sortKey===k) setSortDir(d=>-d); else { setSortKey(k); setSortDir(-1); } };
+
+  const sortVal = useCallback((p) => {
+    const peakB  = p.predictions?.peak?.base    || 0;
+    const next1B = p.predictions?.next1yr?.base || 0;
+    const ups    = p.valueEur > 0 && peakB ? (peakB - p.valueEur) / p.valueEur : 0;
+    if (sortKey === 'name') return p.name;
+
+    // ─── Calibrated-mode keys ───
+    if (sortKey === 'peak12' || sortKey === 'peakCareer') {
+      const cal = calibratedPeaks(p.predictions, p.valueEur);
+      return sortKey === 'peak12' ? (cal.shortTerm || 0) : (cal.career || 0);
+    }
+    if (sortKey === 'expectedUpside') {
+      const { career } = calibratedPeaks(p.predictions, p.valueEur);
+      if (!career || !p.valueEur) return -Infinity;
+      return career / p.valueEur;
+    }
+    if (sortKey === 'trend') {
+      // Sort by signed trend pct: declines sort below — sort below rises.
+      // Players with no signal ('—') get 0 → sort between declines and rises.
+      const t = valueTrend(p.predictions, p.valueEur);
+      return t ? t.pct : 0;
+    }
+    if (sortKey === 'optimisticUpside') {
+      // For attack, this column shows Opt.Up = Opt.Peak / cur.
+      // For non-attack, this column shows Q90.Up = raw q90 / cur.
+      // Sort key matches whatever is displayed.
+      const _area = (typeof window !== 'undefined' && window.__SCOUT_AREA) || 'attack';
+      const ref = _area === 'attack'
+        ? calibratedOptimistic(p.predictions, p.valueEur)
+        : p.predictions?.peak?.opt;
+      if (!ref || !p.valueEur) return -Infinity;
+      return ref / p.valueEur;
+    }
+    if (sortKey === 'optimistic') {
+      // In calibrated mode the displayed optimistic is the graduated blend.
+      // In raw mode this column isn't shown — but the key is still valid for raw raw_opt sort below.
+      return system === 'calibrated'
+        ? (calibratedOptimistic(p.predictions, p.valueEur) || 0)
+        : (p.predictions?.peak?.opt || 0);
+    }
+
+    // ─── Raw-mode keys ───
+    if (sortKey === 'rawOpt') return p.predictions?.peak?.opt     || 0;
+    if (sortKey === 'rawQ75') return p.predictions?.peak?.opt_q75 || 0;
+
+    return { age: p.age, current: p.valueEur, next1yr: next1B, peak: peakB, upside: ups }[sortKey] || 0;
+  }, [sortKey, system]);
+
+  const localFiltered = useMemo(() => {
+    if (serverMode) return [];
+    const [aMin, aMax] = filters.age;
+    const [vMin, vMax] = filters.currentValue;
+    const res = players.filter(p => {
+      if (filters.positions.length     && !filters.positions.includes(p.position))                        return false;
+      if (filters.leagues.length       && !filters.leagues.includes(p.league))                            return false;
+      if ((filters.teams || []).length && !filters.teams.includes(p.club))                                return false;
+      if (filters.nationalities.length && !p.citizenships?.some(c => filters.nationalities.includes(c))) return false;
+      if (aMin != null && p.age < aMin) return false;
+      if (aMax != null && p.age > aMax) return false;
+      const valM  = p.valueEur / 1e6;
+      // For peak filter: calibrated mode uses calibrated career, raw mode uses peak.base
+      const peakBaseEur = system === 'calibrated'
+        ? (calibratedPeaks(p.predictions, p.valueEur).career || 0)
+        : (p.predictions?.peak?.base || 0);
+      const peakM = peakBaseEur / 1e6;
+      if (vMin != null && valM < vMin) return false;
+      if (vMax != null && valM > vMax) return false;
+      if (peakM < filters.peakValue[0] || peakM > filters.peakValue[1]) return false;
+      if (filters.contractYearsMax !== null) {
+        const yrs = contractYearsRemaining(p.contractExpiry);
+        if (yrs === null || yrs > filters.contractYearsMax) return false;
+      }
+      if (search && !p.name.toLowerCase().includes(search.toLowerCase()) &&
+                    !p.club.toLowerCase().includes(search.toLowerCase()))                                  return false;
+      return true;
+    });
+    return [...res].sort((a,b) => {
+      const va = sortVal(a), vb = sortVal(b);
+      if (typeof va === 'string' || typeof vb === 'string') {
+        return String(va).localeCompare(String(vb)) * sortDir;
+      }
+      return (va - vb) * sortDir;
+    });
+  }, [players, filters, sortKey, sortDir, search, sortVal, serverMode, system]);
+
+  const displayPlayersAll = serverMode ? serverPlayers : localFiltered;
+  // Cap rendered rows for performance. Babel-standalone JSX runtime + non-
+  // virtualized React rendering makes 3-5k rows feel sluggish on filter
+  // changes and area switches. 200 is generous for scouting workflows
+  // (top of any sorted list is what's interesting) and keeps the search/
+  // filter interactions responsive. "+N more" footer indicates when the
+  // cap is in play.
+  const DISPLAY_CAP   = 200;
+  const displayPlayers = displayPlayersAll.slice(0, DISPLAY_CAP);
+  const hiddenCount    = Math.max(0, displayPlayersAll.length - DISPLAY_CAP);
+  const totalCount     = serverMode ? serverTotal   : localFiltered.length;
+  const allCount       = serverMode ? (serverMeta?.total || 0) : players.length;
+  const isEmpty        = !serverMode && players.length === 0;
+
+  const ColH = ({ k, label }) => (
+    <span onClick={() => handleSort(k)} style={{ cursor:'pointer', color:sortKey===k?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+      {label}{sortKey===k ? (sortDir===-1?' ↓':' ↑') : ''}
+    </span>
+  );
+
+  return (
+    <div style={{ display:'flex', flexDirection:'column', height:'100vh', overflow:'hidden' }}>
+      {/* Topbar */}
+      <div style={{ height:54, background:'var(--surface)', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', padding:'0 20px', gap:14, flexShrink:0 }}>
+        <button onClick={onHome}
+          style={{ background:'var(--surface3)', border:'1px solid var(--border)', color:'var(--text2)', borderRadius:8, padding:'6px 12px', fontSize:12, fontWeight:700, cursor:'pointer', fontFamily:'var(--font-ui)', display:'flex', alignItems:'center', gap:6, transition:'all .15s', flexShrink:0 }}
+          onMouseEnter={e=>{ e.currentTarget.style.borderColor='var(--accent)'; e.currentTarget.style.color='var(--accent)'; }}
+          onMouseLeave={e=>{ e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.color='var(--text2)'; }}>
+          ← Home
+        </button>
+        <div style={{ width:1, height:24, background:'var(--border)' }}/>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <ScoutLogo size={26}/>
+          <span style={{ fontWeight:900, fontSize:14, letterSpacing:'-0.02em', color:'var(--text)' }}>SCOUT</span>
+          <span style={{ fontWeight:900, fontSize:14, letterSpacing:'-0.02em', color:'var(--accent)' }}>ML</span>
+        </div>
+        {/* Server / local mode badge */}
+        <div style={{ display:'flex', alignItems:'center', gap:6, background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:7, padding:'4px 10px' }}>
+          <div style={{ width:6, height:6, borderRadius:'50%', background: serverMode ? 'var(--positive)' : 'var(--accent3)', flexShrink:0 }}/>
+          <span style={{ fontSize:11, fontWeight:600, color:'var(--text3)', fontFamily:'var(--font-data)' }}>
+            {serverMode ? 'API · live' : 'Local · file'}
+          </span>
+        </div>
+        {/* System (raw vs calibrated) badge */}
+        <div style={{ display:'flex', alignItems:'center', gap:6, background:'var(--surface2)', border:`1px solid ${system === 'calibrated' ? 'rgba(0,200,150,.4)' : 'var(--border)'}`, borderRadius:7, padding:'4px 10px' }}>
+          <div style={{ width:6, height:6, borderRadius:'50%', background: system === 'calibrated' ? 'var(--accent)' : 'var(--accent2)', flexShrink:0 }}/>
+          <span style={{ fontSize:11, fontWeight:600, color: system === 'calibrated' ? 'var(--accent)' : 'var(--text3)', fontFamily:'var(--font-data)' }}>
+            {system === 'calibrated' ? 'Calibrated' : 'Raw Models'}
+          </span>
+        </div>
+        <div style={{ width:1, height:24, background:'var(--border)' }}/>
+        {/* Pitch-area selector — switches the loaded JSON. Only Attack is wired
+            up today; other areas activate when teammates' JSONs land in
+            web_system/final_players_db_<area>.json. */}
+        <div style={{ display:'flex', alignItems:'center', gap:0, background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:8, padding:'2px', flexShrink:0 }}>
+          {pitchAreas.map(a => {
+            const active = a.id === area;
+            return (
+              <button key={a.id}
+                onClick={() => switchArea(a.id)}
+                disabled={!a.ready}
+                title={a.ready ? `Switch to ${a.label}` : `${a.label} — not yet loaded`}
+                style={{
+                  background: active ? 'var(--accent)' : 'transparent',
+                  color: active ? '#090c11' : (a.ready ? 'var(--text2)' : 'var(--text3)'),
+                  border: 'none', borderRadius: 6,
+                  padding: '4px 12px', fontSize: 11, fontWeight: 700,
+                  letterSpacing: '0.04em', cursor: a.ready ? 'pointer' : 'not-allowed',
+                  opacity: a.ready ? 1 : 0.4,
+                  fontFamily: 'var(--font-ui)', transition: 'background .12s, color .12s',
+                }}>
+                {a.label}
+              </button>
+            );
+          })}
+        </div>
+        <div style={{ width:1, height:24, background:'var(--border)' }}/>
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search player or club…"
+          style={{ width:280, background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:8, padding:'7px 14px', color:'var(--text)', fontSize:13, outline:'none', fontFamily:'var(--font-ui)' }}/>
+        <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:12 }}>
+          {!isEmpty && (
+            <span style={{ fontSize:12, color: apiLoading ? 'var(--accent3)' : 'var(--text3)', fontFamily:'var(--font-data)', transition:'color .2s' }}>
+              {apiLoading ? '⟳ loading…' : `${totalCount.toLocaleString()} / ${allCount.toLocaleString()} players`}
+            </span>
+          )}
+          {!serverMode && (
+            <button onClick={() => fileRef.current.click()}
+              style={{ background:'var(--accent)', border:'none', color:'#090c11', borderRadius:8, padding:'7px 16px', fontSize:12, fontWeight:700, cursor:'pointer', fontFamily:'var(--font-ui)', transition:'all .15s' }}
+              onMouseEnter={e=>{ e.currentTarget.style.opacity='0.85'; }}
+              onMouseLeave={e=>{ e.currentTarget.style.opacity='1'; }}>
+              ↑ Load JSON
+            </button>
+          )}
+          <input ref={fileRef} type="file" accept=".json" style={{ display:'none' }} onChange={loadFile}/>
+        </div>
+      </div>
+
+      {/* Body */}
+      <div style={{ display:'flex', flex:1, overflow:'hidden' }}>
+        <SearchPanel filters={filters} setFilters={setFilters}
+          leaguesList={leaguesList} teamsList={teamsList} nationalitiesList={nationalitiesList}
+          system={system} defaults={defaultFilters}
+          onBestSort={() => { setSortKey('peakCareer'); setSortDir(-1); }}/>
+
+        <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+          {isEmpty ? (
+            /* ── Empty / load state (local mode only) ── */
+            <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:20, padding:40 }}>
+              <ScoutLogo size={56}/>
+              <div style={{ fontSize:18, fontWeight:700, color:'var(--text)', letterSpacing:'-0.02em' }}>
+                {autoLoad === 'loading' ? 'Loading data.json…' : 'Load player data to begin'}
+              </div>
+              {autoLoad !== 'loading' && (
+                <p style={{ fontSize:14, color:'var(--text3)', textAlign:'center', maxWidth:400, lineHeight:1.65, margin:0 }}>
+                  A JSON object keyed by <span style={{ fontFamily:'var(--font-data)', color:'var(--text2)' }}>tm_id</span>, each entry with <span style={{ fontFamily:'var(--font-data)', color:'var(--text2)' }}>metadata</span>, <span style={{ fontFamily:'var(--font-data)', color:'var(--text2)' }}>models</span>, <span style={{ fontFamily:'var(--font-data)', color:'var(--text2)' }}>history_data</span>, <span style={{ fontFamily:'var(--font-data)', color:'var(--text2)' }}>advanced_stats</span>.
+                </p>
+              )}
+              {autoLoad !== 'loading' && (
+                <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:12, width:'100%', maxWidth:440 }}>
+                  <div style={{ display:'flex', width:'100%', gap:8 }}>
+                    <input
+                      value={urlInput}
+                      onChange={e => { setUrlInput(e.target.value); setUrlStatus(''); }}
+                      onKeyDown={e => e.key === 'Enter' && loadUrl()}
+                      placeholder="https://… or relative path to JSON"
+                      style={{ flex:1, background:'var(--surface2)', border:`1px solid ${urlStatus.startsWith('error') ? 'var(--negative)' : 'var(--border)'}`, borderRadius:8, padding:'9px 14px', color:'var(--text)', fontSize:13, outline:'none', fontFamily:'var(--font-ui)' }}/>
+                    <button onClick={loadUrl} disabled={!urlInput.trim() || urlStatus==='loading'}
+                      style={{ background:'var(--accent2)', border:'none', color:'#fff', borderRadius:8, padding:'9px 16px', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'var(--font-ui)', opacity: !urlInput.trim() ? 0.4 : 1 }}>
+                      {urlStatus === 'loading' ? '…' : 'Fetch'}
+                    </button>
+                  </div>
+                  {urlStatus.startsWith('error') && (
+                    <div style={{ fontSize:12, color:'var(--negative)', fontFamily:'var(--font-data)', alignSelf:'flex-start' }}>{urlStatus}</div>
+                  )}
+                  <div style={{ fontSize:12, color:'var(--text3)' }}>— or —</div>
+                  <button onClick={() => fileRef.current.click()}
+                    style={{ background:'var(--surface3)', border:'1px solid var(--border)', color:'var(--text2)', borderRadius:10, padding:'10px 28px', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'var(--font-ui)', transition:'all .15s', width:'100%' }}
+                    onMouseEnter={e=>{ e.currentTarget.style.borderColor='var(--accent)'; e.currentTarget.style.color='var(--accent)'; }}
+                    onMouseLeave={e=>{ e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.color='var(--text2)'; }}>
+                    ↑ Upload JSON file
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : system === 'calibrated' ? (
+            <>
+              {/* CALIBRATED — Column headers.
+                  attack:     rank │ Player │ Pos │ Age │ Value │ Exp.Peak │ Trend │ Opt.Peak │ Opt.Up │ Opt.Risk
+                  non-attack: rank │ Player │ Pos │ Age │ Value │ Exp.Peak │ Trend │ Q75 │ Q90 │ Q90.Up │ Opt.Risk
+                  Q75 and Q90 are shown as separate raw columns for non-attack so
+                  the scout can read both quantiles directly — no merging or
+                  smoothing decisions baked in. Q90.Up = raw q90 / cur. */}
+              {(() => {
+                const isAttack = area === 'attack';
+                const headerGridCols = isAttack
+                  ? '34px 1fr 56px 48px 96px 104px 80px 104px 76px 96px'
+                  : '34px 1fr 56px 48px 96px 104px 80px 92px 92px 76px 96px';
+                return (
+                  <div style={{ display:'grid',
+                                gridTemplateColumns: headerGridCols,
+                                padding:'0 16px', height:40, alignItems:'center',
+                                borderBottom:'1px solid var(--border)', background:'var(--surface)', flexShrink:0 }}>
+                    <span/>
+                    <ColH k="name"        label="Player"/>
+                    <span style={{ fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', color:'var(--text3)' }}>Pos</span>
+                    <ColH k="age"         label="Age"/>
+                    <ColH k="current"     label="Value"/>
+                    <span title="Expected Career Peak (calibrated central forecast — smoothed + floored at current)"
+                          onClick={() => handleSort('peakCareer')}
+                          style={{ cursor:'pointer', color:sortKey==='peakCareer'?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+                      Exp.Peak{sortKey==='peakCareer' ? (sortDir===-1?' ↓':' ↑') : ''}
+                    </span>
+                    <span title="Trend — ↑ shows displayed Career Peak's % above current value (≥5%). When peak.base falls ≥5% below current (decline guard), shows ↓ with the raw decline %. '—' otherwise."
+                          onClick={() => handleSort('trend')}
+                          style={{ cursor:'pointer', color:sortKey==='trend'?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+                      Trend{sortKey==='trend' ? (sortDir===-1?' ↓':' ↑') : ''}
+                    </span>
+                    {isAttack ? (
+                      <span title="Optimistic Career Peak — min(q75, smoothed q90), floored at career"
+                            onClick={() => handleSort('optimistic')}
+                            style={{ cursor:'pointer', color:sortKey==='optimistic'?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+                        Opt.Peak{sortKey==='optimistic' ? (sortDir===-1?' ↓':' ↑') : ''}
+                      </span>
+                    ) : (
+                      <>
+                        <span title="Q75 — 75th-percentile career-peak forecast (raw)"
+                              onClick={() => handleSort('rawQ75')}
+                              style={{ cursor:'pointer', color:sortKey==='rawQ75'?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+                          Q75{sortKey==='rawQ75' ? (sortDir===-1?' ↓':' ↑') : ''}
+                        </span>
+                        <span title="Q90 — 90th-percentile career-peak forecast (raw, no smoothing, no q75 cap)"
+                              onClick={() => handleSort('rawOpt')}
+                              style={{ cursor:'pointer', color:sortKey==='rawOpt'?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+                          Q90{sortKey==='rawOpt' ? (sortDir===-1?' ↓':' ↑') : ''}
+                        </span>
+                      </>
+                    )}
+                    <span title={isAttack
+                      ? "Optimistic Upside — Optimistic Career Peak / Current Value"
+                      : "Q90 Upside — raw Q90 / Current Value"}
+                          onClick={() => handleSort('optimisticUpside')}
+                          style={{ cursor:'pointer', color:sortKey==='optimisticUpside'?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+                      {isAttack ? 'Opt.Up' : 'Q90.Up'}{sortKey==='optimisticUpside' ? (sortDir===-1?' ↓':' ↑') : ''}
+                    </span>
+                    <span style={{ fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', color:'var(--text3)' }}
+                          title="Optimistic Risk — confidence in the optimistic-peak forecast (interval width on the q90 band)">
+                      Opt.Risk
+                    </span>
+                  </div>
+                );
+              })()}
+              {/* Rows — calibrated */}
+              <div style={{ overflowY:'auto', flex:1 }}>
+                {displayPlayers.length === 0 && !apiLoading
+                  ? <div style={{ padding:'80px 0', textAlign:'center', color:'var(--text3)', fontSize:14 }}>No players match current filters.</div>
+                  : (<>
+                      {displayPlayers.map((p, i) => <PlayerRowCalibrated key={p.id} player={p} rank={i+1} onClick={() => setSelected(p)} serverMode={serverMode}/>)}
+                      {hiddenCount > 0 && (
+                        <div style={{ padding:'18px 16px', textAlign:'center', color:'var(--text3)', fontSize:12, fontFamily:'var(--font-data)', borderTop:'1px dashed var(--border2)' }}>
+                          Showing top <span style={{ color:'var(--text2)', fontWeight:700 }}>{DISPLAY_CAP}</span> of <span style={{ color:'var(--text2)', fontWeight:700 }}>{displayPlayersAll.length.toLocaleString()}</span> matches · narrow the filters to see more
+                        </div>
+                      )}
+                    </>)
+                }
+              </div>
+            </>
+          ) : (
+            <>
+              {/* RAW — Column headers (raw + q75 column) */}
+              <div style={{ display:'grid', gridTemplateColumns:'36px 1fr 60px 60px 92px 92px 96px 96px 96px 80px', padding:'0 18px', height:40, alignItems:'center', borderBottom:'1px solid var(--border)', background:'var(--surface)', flexShrink:0 }}>
+                <span/>
+                <ColH k="name"    label="Player"/>
+                <span style={{ fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', color:'var(--text3)' }}>Pos</span>
+                <ColH k="age"     label="Age"/>
+                <ColH k="current" label="Value"/>
+                <ColH k="next1yr" label="+1 Season"/>
+                <ColH k="peak"    label="Peak"/>
+                <span title="Optimistic — raw q90 model output (untouched)"
+                      onClick={() => handleSort('rawOpt')}
+                      style={{ cursor:'pointer', color:sortKey==='rawOpt'?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+                  Optimistic{sortKey==='rawOpt' ? (sortDir===-1?' ↓':' ↑') : ''}
+                </span>
+                <span title="Q75 — raw 75th-percentile from the trained q75 pipeline (capped at q90 by merge)"
+                      onClick={() => handleSort('rawQ75')}
+                      style={{ cursor:'pointer', color:sortKey==='rawQ75'?'var(--accent)':'var(--text3)', fontSize:11, fontWeight:700, letterSpacing:'.07em', textTransform:'uppercase', userSelect:'none' }}>
+                  Q75{sortKey==='rawQ75' ? (sortDir===-1?' ↓':' ↑') : ''}
+                </span>
+                <ColH k="upside"  label="Upside"/>
+              </div>
+              {/* Rows — raw */}
+              <div style={{ overflowY:'auto', flex:1 }}>
+                {displayPlayers.length === 0 && !apiLoading
+                  ? <div style={{ padding:'80px 0', textAlign:'center', color:'var(--text3)', fontSize:14 }}>No players match current filters.</div>
+                  : (<>
+                      {displayPlayers.map((p, i) => <PlayerRow key={p.id} player={p} rank={i+1} onClick={() => setSelected(p)} serverMode={serverMode}/>)}
+                      {hiddenCount > 0 && (
+                        <div style={{ padding:'18px 16px', textAlign:'center', color:'var(--text3)', fontSize:12, fontFamily:'var(--font-data)', borderTop:'1px dashed var(--border2)' }}>
+                          Showing top <span style={{ color:'var(--text2)', fontWeight:700 }}>{DISPLAY_CAP}</span> of <span style={{ color:'var(--text2)', fontWeight:700 }}>{displayPlayersAll.length.toLocaleString()}</span> matches · narrow the filters to see more
+                        </div>
+                      )}
+                    </>)
+                }
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {selected && (
+        <PlayerProfile
+          player={selected}
+          onClose={() => setSelected(null)}
+          photo={photos[selected.id] || null}
+          onPhotoUpdate={onPhotoUpdate}
+          serverMode={serverMode}
+          system={system}
+          allPlayers={players.length > 0 ? players : serverPlayers}
+        />
+      )}
+    </div>
+  );
+}
+
+// ─── DEBOUNCE HOOK ────────────────────────────────────────────────────────────
+function useDebounce(value, delay) {
+  const [dbVal, setDbVal] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setDbVal(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+  return dbVal;
+}
+
+// ─── APP ──────────────────────────────────────────────────────────────────────
+function App() {
+  const [view,       setView]       = useState('home');
+  const [system,     setSystem]     = useState(() => {
+    try { return localStorage.getItem('scout_system') || null; } catch (e) { return null; }
+  });
+  const [players,    setPlayers]    = useState([]);   // local-mode only
+  const [photos,     setPhotos]     = useState({});
+  const [serverMode, setServerMode] = useState(false);
+  const [serverMeta, setServerMeta] = useState(null);
+  const [autoLoad,   setAutoLoad]   = useState('idle');
+
+  useEffect(() => {
+    // Default area at boot. switchArea() may change this later when the user
+    // clicks a non-Attack pitch area pill.
+    if (typeof window !== 'undefined') window.__SCOUT_AREA = 'attack';
+    setAutoLoad('loading');
+    fetch('/api/meta')
+      .then(r => { if (!r.ok) throw new Error('no server'); return r.json(); })
+      .then(meta => {
+        setServerMode(true);
+        setServerMeta(meta);
+        // For server mode, R comes from the meta endpoint when available,
+        // else fall back to the JS default. Server's own R is computed on
+        // its loaded JSON for filter/sort consistency.
+        if (meta && typeof meta.opt_ref_scale_eur === 'number' && meta.opt_ref_scale_eur > 0) {
+          // Set the cached scale on the JS side from server's value
+          window.__OPT_REF_FROM_SERVER = meta.opt_ref_scale_eur;
+        }
+        setAutoLoad('done');
+
+        // Boot scan: log per-area player counts to the browser console so
+        // the user can see at a glance how many entries each area has and
+        // how many were dropped during normalize (typically: missing name).
+        // This iterates over meta.available_areas — which the server fills
+        // in based on which final_players_db_*.json files it found.
+        const areas = Array.isArray(meta.available_areas) ? meta.available_areas : ['attack'];
+        console.info(`[Scout ML] Server has ${areas.length} pitch area${areas.length === 1 ? '' : 's'} loaded: ${areas.join(', ')}`);
+        // Fire one meta probe per area, log each separately.
+        Promise.all(areas.map(a =>
+          a === meta.area
+            ? Promise.resolve(meta)
+            : fetch(`/api/meta?area=${a}`).then(r => r.ok ? r.json() : null).catch(() => null)
+        )).then(metas => {
+          for (const m of metas) {
+            if (!m) continue;
+            const skipped = m.skipped ?? 0;
+            const raw     = m.raw_total ?? m.total;
+            const colorLoaded = 'font-weight:700;color:#00c896';
+            const colorReset  = 'font-weight:400;color:inherit';
+            if (skipped > 0) {
+              console.info(
+                `[Scout ML] %c${m.area.padEnd(10)}%c %c${(m.total || 0).toLocaleString()}%c players · ${skipped.toLocaleString()} skipped (missing name) · ${raw.toLocaleString()} raw`,
+                'font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#7eb0ff',
+                colorReset, colorLoaded, colorReset
+              );
+            } else {
+              console.info(
+                `[Scout ML] %c${m.area.padEnd(10)}%c %c${(m.total || 0).toLocaleString()}%c players (clean load, no skips)`,
+                'font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#7eb0ff',
+                colorReset, colorLoaded, colorReset
+              );
+            }
+          }
+        });
+      })
+      .catch(() => {
+        // No server. Probe sibling area files and log counts for each that exists.
+        const areas = ['attack', 'midfield', 'defense', 'gk'];
+        Promise.all(areas.map(a => {
+          const file = a === 'attack' ? 'final_players_db.json' : `final_players_db_${a}.json`;
+          return fetch(file)
+            .then(r => r.ok ? r.json() : null)
+            .then(raw => {
+              if (!raw) return null;
+              const entries = Array.isArray(raw) ? raw : Object.values(raw);
+              const parsed  = entries.map(normalizePlayer).filter(Boolean);
+              return { area: a, file, raw: entries.length, parsed: parsed.length };
+            })
+            .catch(() => null);
+        })).then(results => {
+          const present = results.filter(Boolean);
+          if (present.length === 0) { setAutoLoad('none'); return; }
+          console.info(`[Scout ML] Local mode — found ${present.length} pitch area file${present.length === 1 ? '' : 's'}:`);
+          present.forEach(r => {
+            const skipped = r.raw - r.parsed;
+            const colorLoaded = 'font-weight:700;color:#00c896';
+            const colorReset  = 'font-weight:400;color:inherit';
+            const colorArea   = 'font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#7eb0ff';
+            if (skipped > 0) {
+              console.info(`[Scout ML] %c${r.area.padEnd(10)}%c %c${r.parsed.toLocaleString()}%c players · ${skipped.toLocaleString()} skipped · ${r.raw.toLocaleString()} raw`, colorArea, colorReset, colorLoaded, colorReset);
+            } else {
+              console.info(`[Scout ML] %c${r.area.padEnd(10)}%c %c${r.parsed.toLocaleString()}%c players (clean load, no skips)`, colorArea, colorReset, colorLoaded, colorReset);
+            }
+          });
+          // Update pitchAreas to reflect what's actually available.
+          const presentSet = new Set(present.map(r => r.area));
+          window.__BOOT_PITCH_AREAS = presentSet;   // consumed by SearchPage to reconcile
+          // Auto-load Attack if present, else the first available.
+          const startup = present.find(r => r.area === 'attack') || present[0];
+          if (startup) {
+            const parsed = startup.area === 'attack'
+              ? null  // re-fetch with normalize on the canonical path below
+              : null;
+            // Re-fetch + normalize the chosen startup area for the players state.
+            fetch(startup.file).then(r => r.json()).then(raw => {
+              const entries = Array.isArray(raw) ? raw : Object.values(raw);
+              const arr = entries.map(normalizePlayer).filter(Boolean);
+              if (arr.length > 0) {
+                window.__SCOUT_AREA = startup.area;
+                setPlayers(arr);
+                computeOptimisticRefScale(arr);
+                setAutoLoad('done');
+              } else setAutoLoad('none');
+            }).catch(() => setAutoLoad('none'));
+          } else {
+            setAutoLoad('none');
+          }
+        });
+      });
+  }, []);
+
+  const handlePhotoUpdate = (id, url) => setPhotos(p => ({ ...p, [id]: url }));
+
+  const handleEnter = (sys) => {
+    setSystem(sys);
+    try { localStorage.setItem('scout_system', sys); } catch (e) {}
+    setView('search');
+  };
+
+  const handleHome = () => setView('home');
+
+  return view === 'home'
+    ? <HomePage onEnter={handleEnter} autoLoad={autoLoad} serverMode={serverMode}/>
+    : <SearchPage
+        players={players} setPlayers={setPlayers}
+        onHome={handleHome}
+        photos={photos} onPhotoUpdate={handlePhotoUpdate}
+        serverMode={serverMode} setServerMode={setServerMode}
+        serverMeta={serverMeta} setServerMeta={setServerMeta}
+        autoLoad={autoLoad}
+        system={system || 'raw'}
+      />;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

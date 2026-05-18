@@ -1,0 +1,81 @@
+======================================================================
+ 📊 FINAL DATABASE & SUB-MODELS ANALYTICS REPORT
+======================================================================
+
+👥 1. DATASET STATISTICS (ROWS & CONSISTENCY)
+----------------------------------------------------------------------
+🔹 MASTER (All Players)
+   ▪ Total Records (Seasons) : 152,620
+   ▪ Unique Players          : 39,485
+   ▪ Players with 3+ Seasons : 19,998 (50.6% of model's players)
+
+🔹 GK (Goalkeepers)
+   ▪ Total Records (Seasons) : 11,136
+   ▪ Unique Players          : 3,124
+   ▪ Players with 3+ Seasons : 1,532 (49.0% of model's players)
+
+🔹 DEF (Defenders)
+   ▪ Total Records (Seasons) : 51,089
+   ▪ Unique Players          : 12,773
+   ▪ Players with 3+ Seasons : 6,763 (52.9% of model's players)
+
+🔹 MID (Midfielders)
+   ▪ Total Records (Seasons) : 44,614
+   ▪ Unique Players          : 11,472
+   ▪ Players with 3+ Seasons : 5,772 (50.3% of model's players)
+
+🔹 ATT (Attackers)
+   ▪ Total Records (Seasons) : 45,781
+   ▪ Unique Players          : 12,116
+   ▪ Players with 3+ Seasons : 5,931 (49.0% of model's players)
+
+======================================================================
+ 🛠️ 2. PROPOSED FEATURE CATEGORIES PER MODEL
+======================================================================
+
+### 🌍 Universal Categories (Mandatory for all 4 Models)
+Features describing the economic, physical, and general status of the player, regardless of position.
+* **Identifiers & Meta-data:** `tm_id`, `player`, `player_positions`, `team`, `team id`, `player id`
+* **Economic & Time Value:** `market_value` (Target Variable), `_season_year`, `_league`
+* **Age & Experience:** `birth_year`, `age_in_season`
+* **Match Volume:** `appearances`, `matchesStarted`, `minutesPlayed`
+* **General Performance Evaluation:** `rating`, `countRating`
+
+---
+
+### 🧤 Model 1: Goalkeepers (GK)
+* **Goalkeeping Core (Saves & Conceding):** `saves`, `cleanSheet`, `goalsConceded`, `goalsConcededInsideTheBox`, `goalsConcededOutsideTheBox`, `savesCaught`, `savesParried`, `savedShotsFromInsideTheBox`, `savedShotsFromOutsideTheBox`, `goalsPrevented`
+* **Box Command:** `highClaims`, `punches`, `runsOut`, `crossesNotClaimed`
+* **Penalty Situations:** `penaltyFaced`, `penaltySave`
+* **Distribution (Overlap with Defenders):** `accuratePasses`, `accuratePassesPercentage`, `accurateLongBalls`, `accurateLongBallsPercentage`, `goalKicks`, `accurateOwnHalfPasses`, `inaccuratePasses`
+* **Critical Errors:** `errorLeadToGoal`, `errorLeadToShot`, `redCards`, `directRedCards`
+
+---
+
+### 🛡️ Model 2: Defenders (DEF - CB, RB, LB, RWB, LWB)
+* **Active Defense Core:** `interceptions`, `clearances`, `blockedShots`, `outfielderBlocks`, `ballRecovery`, `possessionWonAttThird`
+* **Duels & Physicality:** `aerialDuelsWon`, `aerialDuelsWonPercentage`, `aerialLost`, `groundDuelsWon`, `groundDuelsWonPercentage`, `duelLost`, `dribbledPast`
+* **Errors & Discipline:** `errorLeadToGoal`, `errorLeadToShot`, `penaltyConceded`, `ownGoals`, `fouls`, `redCards`, `directRedCards`
+* **Build-up Play (Overlap):** `accuratePasses`, `accuratePassesPercentage`, `accurateOwnHalfPasses`, `accurateOppositionHalfPasses`, `accurateLongBalls`, `possessionLost`, `inaccuratePasses`
+* **Offensive Contribution (Overlap):** `goals`, `headedGoals`, `assists`, `keyPasses`, `accurateCrosses`, `accurateCrossesPercentage`
+* **Custom Engineering Features:** `is_versatile`, `secondary_position`, `number_of_positions`
+
+---
+
+### 🎯 Model 3: Midfielders (MID - CDM, CM, CAM)
+* **Playmaking & Ball Circulation:** `accuratePasses`, `accuratePassesPercentage`, `accurateOppositionHalfPasses`, `accurateFinalThirdPasses`, `accurateChippedPasses`, `accurateLongBalls`, `accurateLongBallsPercentage`, `possessionLost`, `inaccuratePasses`
+* **Chance Creation:** `keyPasses`, `bigChancesCreated`, `assists`, `expectedAssists`, `passToAssist`
+* **Technique & Ball Retention:** `dispossessed`, `penaltyWon`, `fouls` (fouls suffered)
+* **Defensive Support (Overlap):** `interceptions`, `groundDuelsWon`, `groundDuelsWonPercentage`, `duelLost`, `dribbledPast`, `outfielderBlocks`, `ballRecovery`, `possessionWonAttThird`
+* **Long Range Threat (Overlap):** `goals`, `expectedGoals`, `goalsFromOutsideTheBox`, `shotFromSetPiece`, `freeKickGoal`
+* **Custom Engineering Features:** `is_winger` (if applicable)
+
+---
+
+### ⚔️ Model 4: Attackers (ATT - ST, CF, RW, LW, RM, LM)
+* **Finishing Core:** `goals`, `expectedGoals`, `goalsAssistsSum`, `scoringFrequency`, `goalConversionPercentage`, `bigChancesMissed`, `hitWoodwork`, `goalsFromInsideTheBox`, `goalsFromOutsideTheBox`, `headedGoals`, `leftFootGoals`, `rightFootGoals`
+* **Set Pieces & Penalties:** `penaltiesTaken`, `penaltyGoals`, `penaltyConversion`, `penaltyWon`, `attemptPenaltyTarget`, `attemptPenaltyMiss`, `attemptPenaltyPost`, `shotFromSetPiece`, `freeKickGoal`, `setPieceConversion`
+* **Threat & Positioning:** `offsides`
+* **Aerial Threat (Overlap):** `aerialDuelsWon`, `aerialDuelsWonPercentage`, `aerialLost`
+* **Creation for Wingers (Overlap):** `assists`, `expectedAssists`, `keyPasses`, `bigChancesCreated`, `passToAssist`, `accurateCrosses`, `accurateCrossesPercentage`, `accurateFinalThirdPasses`
+* **Custom Engineering Features:** `is_winger`
