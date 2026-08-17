@@ -18,6 +18,13 @@ changing only a handful of lines** — see [`REAL_HARDWARE_INTEGRATION.md`](./RE
 
 ---
 
+## Demo
+
+![Smart Parking Demo](assets/parking_demo.gif)
+
+▶️ [Watch the full demo - user view](https://drive.google.com/file/d/1ieZtvs6f6Qa5-rXbEMKGwf4GR4F6v8yu/view?usp=sharing)
+▶️ [Watch the full demo - operator and algorithmic view](https://drive.google.com/file/d/1VTN1o-60vLxvMoQBK178hhFcByqA3e2c/view?usp=sharing)
+
 ## Quick Start
 
 ### Requirements
