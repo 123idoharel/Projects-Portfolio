@@ -10,7 +10,7 @@ The project was developed as a **Proof of Concept (PoC)** for a broader scouting
 
 ## Demo
 
-![Football Market Value Forecasting Demo](assets/football_demo.gif)
+![Football Market Value Forecasting Demo](Football_Scouting_ML/assets/football_demo.gif)
 
 ▶️ **[Watch the full demo](https://drive.google.com/file/d/1Fv764Jmv0BCrODNTb9_o60kTf9SmEI6Y/view?usp=sharing)**
 
