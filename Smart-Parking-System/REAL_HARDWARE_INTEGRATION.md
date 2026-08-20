@@ -6,37 +6,42 @@
 
 ## Overview
 
-The system is designed so that connecting real hardware requires changing
-**only a few lines in `server.py`**. All routing logic, navigation, spot
-selection, and UI are completely unaffected.
+Connecting real hardware requires changing **only the adapter lines near the
+top of `server.py`**. All routing logic, spot selection, navigation and UI are
+unaffected.
 
-This is achieved through an **adapter layer** in `core/adapters/` that
-isolates every external data source behind a common interface:
+This is achieved through an **adapter layer** in `core/adapters/` that isolates
+every external data source behind a common interface:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                          server.py                                   │
 │                                                                      │
-│  sensor_adapter           vehicle_position_adapter   ped_position   │
-│       │                           │                       │         │
-│  ─────▼──────────────────────────▼───────────────────────▼──────── │
+│  sensor_adapter           vehicle_position_adapter   ped_position    │
+│       │                           │                       │          │
+│  ─────▼──────────────────────────▼───────────────────────▼────────   │
 │                    core/adapters/                                    │
-│  ─────────────────────────────────────────────────────────────────  │
-│  SensorAdapter      VehiclePositionAdapter   PedestrianPositionAdapt│
-│  (who says a        (who knows where         (who knows where the   │
-│   spot is taken?)    the car is?)             pedestrian is?)       │
-│  ─────────────────────────────────────────────────────────────────  │
-│                    core/simulation.py  (routing logic — never        │
-│                    core/scoring.py      changes when you swap        │
-│                    core/pedestrian.py   hardware)                   │
+│  ─────────────────────────────────────────────────────────────────   │
+│  SensorAdapter      VehiclePositionAdapter   PedestrianPositionAdapt │
+│  (who says a        (who knows where         (who knows where the    │
+│   spot is taken?)    the car is?)             pedestrian is?)        │
+│  ─────────────────────────────────────────────────────────────────   │
+│         core/floor_selection.py   selection + routing —              │
+│         core/simulation.py        never changes when you             │
+│         core/pedestrian.py        swap hardware                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Today:** all three adapters are `Simulated*` variants — they run the
-demo without any real hardware.
+**Today** (`server.py`, immediately after the `from core.adapters import …`
+block):
+
+```python
+sensor_adapter           = SimulatedSensorAdapter(state.runtime)
+vehicle_position_adapter = SimulatedVehiclePositionAdapter()
+ped_position_adapter     = ServerSimulatedPedestrianPositionAdapter()
+```
 
 **In production:** replace each `Simulated*` line with the real adapter.
-Nothing else changes.
 
 ---
 
@@ -44,33 +49,35 @@ Nothing else changes.
 
 ### 1. `sensor_adapter` — Spot Occupancy
 
-Who tells the system whether a parking spot is free or occupied?
-
 | Adapter | When to use |
 |---|---|
-| `SimulatedSensorAdapter` | **Today** — simulation writes occupancy itself |
+| `SimulatedSensorAdapter` | **Today** — the simulation writes occupancy itself; `poll_once()` is a no-op |
 | `RestPollingSensorAdapter` | Sensor platform exposes a REST API you poll |
-| `MqttSensorAdapter` | Sensor platform pushes events via MQTT broker |
+| `MqttSensorAdapter` | Sensor platform pushes events via an MQTT broker |
 | `WebhookSensorAdapter` | Sensor platform POSTs to your server |
+
+All four share the debounce state machine in the `SensorAdapter` base class and
+report confirmed changes through `set_on_change(cb)`. `server.py` already wires
+`_on_sensor_change` as that callback, which frees or occupies the spot, forces a
+delta on the next WebSocket frame, and triggers `reassign_from_current()` when
+an occupied spot had a live reservation.
 
 ### 2. `vehicle_position_adapter` — Vehicle Location
 
-Who knows where the car currently is inside the garage?
-
 | Adapter | When to use |
 |---|---|
-| `SimulatedVehiclePositionAdapter` | **Today** — position is computed from route + speed |
-| `RfidZoneVehicleAdapter` | RFID loop detectors at aisle entrances |
+| `SimulatedVehiclePositionAdapter` | **Today** — position computed from route + speed |
+| `RfidZoneVehicleAdapter` | RFID loop detectors at aisle entrances; dead-reckons between fixes |
+| `BleVehiclePositionAdapter` | Driver's phone reports BLE RSSI; reuses the pedestrian beacon grid. 1–5 m accuracy |
 | *(extend `VehiclePositionAdapter`)* | UWB anchors, overhead cameras, etc. |
 
 ### 3. `ped_position_adapter` — Pedestrian Location
 
-Who knows where the user is walking inside the garage?
-
 | Adapter | When to use |
 |---|---|
-| `SimulatedPedestrianPositionAdapter` | **Today** — frontend animates walking locally |
-| `BlePositionAdapter` | BLE beacons + phone app reporting RSSI |
+| `ServerSimulatedPedestrianPositionAdapter` | **Today** — the server advances the walker along the route inside the simulation loop |
+| `SimulatedPedestrianPositionAdapter` | Older client-side variant; kept for reference, not wired |
+| `BlePositionAdapter` | BLE beacons + phone app reporting RSSI, trilaterated server-side |
 | *(extend `PedestrianPositionAdapter`)* | UWB, WiFi fingerprinting, etc. |
 
 ---
@@ -80,9 +87,6 @@ Who knows where the user is walking inside the garage?
 ### Step 1 — Spot Occupancy Sensors
 
 #### Option A: The sensor system exposes a REST API (most common)
-
-The sensor platform has an endpoint you can poll, returning a list of
-spots with their current occupancy state.
 
 **`server.py` — change these lines:**
 
@@ -95,8 +99,8 @@ from core.adapters import RestPollingSensorAdapter
 sensor_adapter = RestPollingSensorAdapter(
     runtime         = state.runtime,
     url             = "https://192.168.1.50/api/spots",   # sensor platform URL
-    api_key         = "Bearer <your-api-key>",             # if required
-    poll_interval_s = 5.0,                                 # how often to poll
+    api_key         = "Bearer <your-api-key>",            # sent as the Authorization header
+    poll_interval_s = 5.0,
 )
 ```
 
@@ -117,15 +121,26 @@ Expected response format from the sensor platform:
 ]
 ```
 
-If the platform uses different field names (`status`, `state`, `is_taken`,
-etc.) — edit the `_fetch_raw_states()` method in `sensor_adapter.py` to
-match. It's a single dict comprehension, clearly marked.
+`_fetch_raw_states()` already accepts `id`, `spot_id` or `name` for the
+identifier, and treats either `occupied: true` or `status: "occupied"` as
+occupied. For anything else, edit that method — it is a short, clearly marked
+loop.
+
+**Two things to know before you deploy this:**
+
+1. `RestPollingSensorAdapter._fetch_raw_states()` uses **`aiohttp`**, which is
+   not in `requirements.txt`. Add `aiohttp>=3.9` before switching.
+2. The simulation loop in `server.py` already calls `await
+   sensor_adapter.poll_once()` on every tick (20 fps) whenever a WebSocket
+   client is connected. `start_background_polling()` runs an independent loop at
+   `poll_interval_s`. Both are safe — the debounce state machine deduplicates —
+   but if you do **not** want HTTP traffic at 20 fps, either rely solely on the
+   background task and make `poll_once()` read a cached snapshot (as
+   `MqttSensorAdapter` does), or drop the per-tick call.
 
 ---
 
 #### Option B: MQTT push (low-latency, event-driven)
-
-The sensor platform publishes to an MQTT broker whenever a spot changes.
 
 **`server.py`:**
 
@@ -151,14 +166,16 @@ Expected MQTT message (topic `parking/spot/F0-A03`):
 {"occupied": true, "sensor_id": "S-042", "ts": 1710000000}
 ```
 
+The subscriber writes into an internal `_latest` dict; `poll_once()` snapshots
+it, so the per-tick call in the simulation loop costs nothing.
+
 Requires: `pip install aiomqtt`
 
 ---
 
 #### Option C: The sensor platform sends webhooks to you
 
-The sensor system can be configured to POST to your server whenever a
-spot changes state. The endpoint `POST /api/spot_event` already exists.
+`POST /api/spot_event` already exists and is the lowest-effort path.
 
 **`server.py`:**
 
@@ -181,6 +198,12 @@ Content-Type: application/json
 }
 ```
 
+Useful detail: the endpoint works **even without swapping the adapter**. If
+`sensor_adapter` is not a `WebhookSensorAdapter`, the handler falls back to
+translating the id via `external_to_internal()` and applying the change
+directly through `_on_sensor_change()`. That path skips debouncing, so use it
+for smoke-testing only; switch to `WebhookSensorAdapter` in production.
+
 ---
 
 #### Spot ID Mapping
@@ -199,26 +222,26 @@ SPOT_ID_MAP = {
 }
 ```
 
-When this dict is populated, `external_to_internal()` translates every
-incoming ID automatically. If an external ID has no mapping, it is passed
-through unchanged (so if the naming conventions match, the dict stays empty).
+`external_to_internal()` translates every incoming id. Unmapped ids pass
+through unchanged, so if your naming already matches, leave the dict empty.
 
 ---
 
 #### Debounce Thresholds
 
-Real sensors are noisy: a car driving slowly past a spot, a motorcycle,
-or a sensor glitch can produce brief false readings. The adapter holds a
-state change in a pending queue and only confirms it after the sensor has
-held the same reading for:
+Real sensors are noisy: a car driving slowly past a spot, a motorcycle, or a
+glitch can produce brief false readings. The base adapter holds a state change
+in a pending queue and only confirms it after the sensor has held the same
+reading for:
 
 ```python
 # core/adapters/sensor_adapter.py
-DEBOUNCE_FREE_TO_OCC_S = 2.0   # sensor must read "occupied" for 2s before accepting
-DEBOUNCE_OCC_TO_FREE_S = 3.0   # sensor must read "free" for 3s before accepting
+DEBOUNCE_FREE_TO_OCC_S = 2.0   # must read "occupied" for 2 s before accepting
+DEBOUNCE_OCC_TO_FREE_S = 3.0   # must read "free" for 3 s before accepting
 ```
 
-Adjust these values based on your sensor hardware's observed noise characteristics.
+`SimulatedSensorAdapter` overrides both to `0.0`. Tune the real values to your
+hardware's observed noise characteristics.
 
 ---
 
@@ -227,9 +250,8 @@ Adjust these values based on your sensor hardware's observed noise characteristi
 #### Option A: RFID zone checkpoints (most practical for garages)
 
 RFID loop detectors or gate readers at the entrance of each aisle section
-detect when a car enters a zone and report its tag ID. This gives coarse
-but reliable position. Between checkpoints, the system uses dead reckoning
-(same as simulation).
+detect a car entering a zone and report its tag id. Coarse but reliable.
+Between checkpoints the adapter dead-reckons exactly as the simulation does.
 
 **`server.py`:**
 
@@ -252,17 +274,53 @@ Wire your RFID event callback to the adapter:
 vehicle_position_adapter.receive_zone_event(vid, "ZONE_AISLE_A", state.runtime)
 ```
 
-The `vid` must match the vehicle ID in the system. For the user's car
-this is `"user_car_1"`. For managed fleet vehicles, use their plate or
-tag ID as the vehicle ID when spawning via `POST /api/spawn`.
+`receive_zone_event` moves the vehicle to the zone centroid and re-snaps
+`route_i` via `snap_route_index()`, so navigation instructions stay in sync.
+
+The `vid` must match the vehicle id in the system. For the driver's own car
+that is `"user_car_1"`. For fleet vehicles, use the plate or tag id as the
+vehicle id when spawning via `POST /api/spawn`.
 
 ---
 
-#### Option B: Direct position feed (UWB / overhead cameras)
+#### Option B: BLE via the driver's phone
 
-If your infrastructure produces exact coordinates (UWB time-of-flight
-anchors, overhead cameras with plate recognition, etc.), use the
-`POST /api/vehicle_position` endpoint directly. It already exists.
+`BleVehiclePositionAdapter` reuses the same beacon grid as pedestrian
+navigation — no extra hardware beyond what Step 3 already needs.
+
+```python
+from core.adapters import BleVehiclePositionAdapter
+vehicle_position_adapter = BleVehiclePositionAdapter(beacon_map=BEACON_MAP)
+```
+
+**This one is not plug-and-play.** `POST /api/ble_scan` currently accepts only
+`{ session_id, beacons }` and routes everything to `ped_position_adapter`. To
+use the vehicle variant you must extend `BleScanRequest` with an `entity_type`
+(and `entity_id`) field and branch in the handler:
+
+```python
+class BleScanRequest(BaseModel):
+    session_id : str
+    beacons    : List[Dict[str, Any]]
+    entity_type: str = "pedestrian"     # ← add
+    entity_id  : Optional[str] = None   # ← add
+
+# in ble_scan():
+if req.entity_type == "vehicle":
+    vehicle_position_adapter.receive_rssi_scan(req.entity_id, req.beacons)
+else:
+    ped_position_adapter.receive_rssi_scan(req.session_id, req.beacons)
+```
+
+Accuracy is 1–5 m — enough for aisle-level guidance. For lane precision
+(sub-1 m), use UWB or a camera instead.
+
+---
+
+#### Option C: Direct position feed (UWB / overhead cameras)
+
+If your infrastructure produces exact coordinates, use `POST
+/api/vehicle_position` directly. It already exists and needs no changes.
 
 ```
 POST /api/vehicle_position
@@ -276,31 +334,35 @@ POST /api/vehicle_position
 }
 ```
 
-The server writes the position and automatically re-snaps `route_i`
-(the vehicle's progress along its planned route) so navigation instructions
-stay synchronised with the real location.
+The server writes the position and re-snaps `route_i` so navigation
+instructions stay synchronised with the real location.
 
 In simulation mode this endpoint exists but has no lasting effect —
-`SimulatedVehiclePositionAdapter` overwrites position every tick. Switch
-to a real adapter before wiring external position feeds.
+`SimulatedVehiclePositionAdapter` overwrites the position on the next tick.
+Switch to a real adapter (or one that dead-reckons from external fixes) before
+wiring an external position feed.
 
 ---
 
 ### Step 3 — Pedestrian Positioning (Find My Car)
 
-**How it works today (simulation):**
-The `FindMyCarScreen.jsx` frontend simulates walking locally — it advances
-an animated dot along the route at 1.2 m/s. The server has no knowledge
-of where the pedestrian actually is.
+**How it works today:** the pedestrian walker is simulated **on the server**,
+not in the browser. `POST /api/walk_route` registers a session with
+`ServerSimulatedPedestrianPositionAdapter.register_session(session_id,
+waypoints)`; `POST /api/start_navigation` un-pauses it; `advance_all()` is
+called every tick from the simulation loop; and `FindMyCarScreen.jsx` polls
+`GET /api/position/{session_id}` roughly once per second.
 
-**How it works with real BLE beacons:**
+**This is the key point for integration:** the frontend already consumes real
+server positions. It does not know or care how they were produced.
 
-BLE beacons (iBeacon or Eddystone) are mounted at known positions in the
-garage ceiling, one per ~15 m. The phone app scans for nearby beacons,
-measures their signal strength (RSSI), and the server trilaterates the user's
-position from three or more readings.
+**Switching to real BLE beacons:**
 
-#### Server side
+BLE beacons (iBeacon or Eddystone) are mounted at known positions in the garage
+ceiling, roughly one per 15 m. The phone app scans nearby beacons, measures RSSI,
+and the server trilaterates from three or more readings.
+
+#### Server side — this is the whole change
 
 **`server.py`:**
 
@@ -313,51 +375,41 @@ BEACON_MAP = {
     "B0003": {"x": 275, "y": 100, "floor": 0, "tx_power": -59},
     "B0004": {"x":  75, "y":  50, "floor": 0, "tx_power": -59},
     # one entry per physical beacon, coordinates from your layout JSON
-    # tx_power: measured RSSI at 1 metre distance (calibrate per beacon model)
+    # tx_power: measured RSSI at 1 metre (calibrate per beacon model)
 }
 
 ped_position_adapter = BlePositionAdapter(beacon_map=BEACON_MAP)
 ```
 
-The endpoints `POST /api/ble_scan` and `GET /api/position/{session_id}`
-already exist in `server.py`. No further changes needed on the server.
+`POST /api/ble_scan` and `GET /api/position/{session_id}` already exist and
+handle `BlePositionAdapter` correctly.
 
-#### Frontend side (`FindMyCarScreen.jsx`)
+Two consequences of the swap, both harmless:
+- `BlePositionAdapter` has no `register_session`, `resume_session` or
+  `advance_all`, so `/api/walk_route`, `/api/start_navigation` and the
+  simulation loop all skip their pedestrian branches — every call site is
+  already guarded with `hasattr(...)`.
+- `receive_rssi_scan()` returns `None` until at least three mapped beacons are
+  visible, and `/api/position/{id}` then returns `{"position": null}`. The
+  frontend already tolerates a null position.
 
-Replace the simulated walking in `usePositionSource` with API polling:
+#### Phone side
+
+The only new work is on the device. It must scan beacons and POST them roughly
+once per second:
 
 ```javascript
-// BEFORE (simulation — animates walking along the route):
-// usePositionSource returns a position that advances at 1.2 m/s
-
-// AFTER (real BLE):
-// 1. Phone scans beacons every ~1s and POSTs to /api/ble_scan
-// 2. usePositionSource polls /api/position/{sessionId} for real position
-
-const sessionId = useRef(`ped_${Date.now()}`).current
-
-// In the position polling effect:
-useEffect(() => {
-    const interval = setInterval(async () => {
-        // Send BLE scan (from native BLE SDK / Capacitor / React Native)
-        const beacons = await getBleBeacons()   // your native SDK call
-        await fetch('/api/ble_scan', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ session_id: sessionId, beacons })
-        })
-
-        // Retrieve trilaterated position
-        const { position } = await fetch(`/api/position/${sessionId}`).then(r => r.json())
-        if (position) setCurrentPosition(position)
-    }, 1000)
-    return () => clearInterval(interval)
-}, [])
+const beacons = await getBleBeacons()      // native BLE SDK / Capacitor / RN
+await fetch('/api/ble_scan', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ session_id: sessionId, beacons })
+})
 ```
 
-This is the only frontend change required. All navigation instruction
-logic, map rendering, and step detection continue to work unchanged because
-they consume the same `{x, y, floor}` structure regardless of source.
+`FindMyCarScreen.jsx` needs **no change** — `usePositionSource` already polls
+`/api/position/{sessionId}`. Map rendering, step detection and instruction
+logic all consume the same `{x, y, floor}` structure regardless of source.
 
 ---
 
@@ -366,19 +418,22 @@ they consume the same `{x, y, floor}` structure regardless of source.
 ### Spot occupancy sensors
 
 - [ ] Determine integration method: REST poll / MQTT / webhook
-- [ ] Obtain API credentials / broker address from sensor platform
-- [ ] Change `sensor_adapter = ...` in `server.py` (3–5 lines)
+- [ ] Obtain API credentials / broker address from the sensor platform
+- [ ] Change `sensor_adapter = ...` in `server.py` (3–7 lines)
+- [ ] If REST: add `aiohttp` to `requirements.txt`, and decide whether to keep the per-tick `poll_once()`
 - [ ] If REST or MQTT: add `sensor_adapter.start_background_*()` to `startup()`
 - [ ] Populate `SPOT_ID_MAP` in `sensor_adapter.py` if naming differs
 - [ ] Tune `DEBOUNCE_*` thresholds to match sensor hardware noise level
-- [ ] Test: occupy a real spot, verify UI updates within ~5 seconds
+- [ ] Test: occupy a real spot, verify the UI updates within ~5 seconds
+- [ ] Test: occupy a spot that is currently RESERVED, verify the affected vehicle reroutes
 
 ### Vehicle navigation
 
-- [ ] Determine positioning method: RFID zones / UWB / camera
-- [ ] For RFID: map zone IDs to layout coordinates, change `vehicle_position_adapter`
-- [ ] For UWB/camera: wire infrastructure callback to `POST /api/vehicle_position`
-- [ ] Test: drive the user's car through the garage, verify blue arrow tracks position
+- [ ] Determine positioning method: RFID zones / BLE phone / UWB / camera
+- [ ] For RFID: map zone ids to layout coordinates, change `vehicle_position_adapter`, wire `receive_zone_event()`
+- [ ] For BLE: extend `BleScanRequest` with `entity_type` / `entity_id` and branch in `/api/ble_scan`
+- [ ] For UWB/camera: wire the infrastructure callback to `POST /api/vehicle_position`
+- [ ] Test: drive the user's car through the garage, verify the chevron tracks position and instructions stay in sync
 
 ### Pedestrian navigation
 
@@ -386,8 +441,8 @@ they consume the same `{x, y, floor}` structure regardless of source.
 - [ ] Calibrate `tx_power` for each beacon model (measure RSSI at 1 m)
 - [ ] Populate `BEACON_MAP` with beacon UUIDs and physical coordinates
 - [ ] Change `ped_position_adapter = BlePositionAdapter(...)` in `server.py`
-- [ ] Update `usePositionSource` in `FindMyCarScreen.jsx` to poll `/api/position/{id}`
-- [ ] Test: walk to a parked car, verify blue dot tracks path and instructions fire correctly
+- [ ] Test: walk to a parked car, verify the dot tracks the path and instructions fire correctly
+- [ ] Test: stand where fewer than 3 beacons are visible, verify the UI degrades gracefully
 
 ---
 
@@ -395,12 +450,13 @@ they consume the same `{x, y, floor}` structure regardless of source.
 
 | Scenario | Files | Lines changed |
 |---|---|---|
-| Sensors via REST | `server.py` + `sensor_adapter.py` (SPOT_ID_MAP) | ~8 |
-| Sensors via MQTT | `server.py` | ~6 |
-| Sensors via webhook | `server.py` | ~1 |
+| Sensors via REST | `server.py` + `requirements.txt` (+ `SPOT_ID_MAP`) | ~10 |
+| Sensors via MQTT | `server.py` | ~8 |
+| Sensors via webhook | `server.py` | ~2 |
 | Vehicle RFID zones | `server.py` | ~8 |
+| Vehicle BLE (phone) | `server.py` (adapter + `/api/ble_scan` branch) | ~12 |
 | Vehicle UWB / camera | nothing — use existing `/api/vehicle_position` | 0 |
-| Pedestrian BLE | `server.py` + `FindMyCarScreen.jsx` | ~15 |
+| Pedestrian BLE | `server.py` only (frontend already polls) | ~10 |
 
 ---
 
@@ -409,26 +465,38 @@ they consume the same `{x, y, floor}` structure regardless of source.
 ```
 core/
   adapters/
-    __init__.py            exports all adapter classes
-    sensor_adapter.py      SensorAdapter base + all 4 concrete variants
-    position_adapter.py    VehiclePositionAdapter + PedestrianPositionAdapter
+    __init__.py            exports every adapter class + PositionSample,
+                           external_to_internal, SPOT_ID_MAP, snap_route_index
+    sensor_adapter.py      SensorAdapter base + 4 concrete variants
+                           (Simulated / RestPolling / Mqtt / Webhook)
+    position_adapter.py    VehiclePositionAdapter  → Simulated · RfidZone · BleVehicle
+                           PedestrianPositionAdapter → Simulated ·
+                             ServerSimulated (active) · Ble
                            + PositionSample dataclass + snap_route_index()
 
-server.py                  Lines ~130–145: the 3 adapter instantiation lines
-                           Lines ~430–520: new endpoints (spot_event, ble_scan,
-                                          vehicle_position, position/{id})
+server.py                  ~L160–172 : the 3 adapter instantiation lines
+                           ~L1121    : POST /api/spot_event
+                           ~L1175    : POST /api/ble_scan
+                           ~L1188    : POST /api/start_navigation
+                           ~L1198    : GET  /api/position/{session_id}
+                           ~L1220    : POST /api/vehicle_position
+                           ~L1241    : POST /api/pause_vehicle
+                           ~L1252    : POST /api/resume_vehicle
 
-core/simulation.py         tick() accepts position_adapter= parameter
-                           (defaults to SimulatedVehiclePositionAdapter)
+core/simulation.py         tick(..., position_adapter=None) — falls back to a
+                           module-level SimulatedVehiclePositionAdapter when None
 ```
 
 ### What never changes
 
 - `core/offline.py` — precomputed routing tables
-- `core/scoring.py` — spot selection algorithm
+- `core/floor_selection.py` — primary spot + floor selection
+- `core/scoring.py` — legacy ranking fallback
 - `core/pedestrian.py` — pedestrian graph and Dijkstra
 - `core/dijkstra.py`, `core/graphs.py` — graph primitives
-- All of `frontend/` except `usePositionSource` in `FindMyCarScreen.jsx`
+- `core/layout_loader.py`, `layouts/*.json`
+- All of `frontend/` — including `FindMyCarScreen.jsx`, which already consumes
+  server-provided positions
 
-The routing brain of the system is completely isolated from how position
-and occupancy data arrives. Swap the source, keep the intelligence.
+The routing brain of the system is completely isolated from how position and
+occupancy data arrives. Swap the source, keep the intelligence.
